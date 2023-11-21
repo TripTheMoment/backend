@@ -21,6 +21,7 @@ public class MemberRes {
 
     private String email;
     private String name;
+    private String profileImgUrl;
     private boolean followYn;
     private List<ArticleRes> articles;
     private int followingCnt;

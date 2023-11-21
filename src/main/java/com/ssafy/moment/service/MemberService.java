@@ -4,6 +4,8 @@ import com.ssafy.moment.domain.dto.request.MemberInfoUpdateForm;
 import com.ssafy.moment.domain.dto.request.PasswordResetReq;
 import com.ssafy.moment.domain.dto.request.SignupReq;
 import com.ssafy.moment.domain.dto.response.BookmarkRes;
+import com.ssafy.moment.domain.dto.response.FollowerRes;
+import com.ssafy.moment.domain.dto.response.FollowingRes;
 import com.ssafy.moment.domain.dto.response.MemberRes;
 import com.ssafy.moment.domain.entity.Bookmark;
 import com.ssafy.moment.domain.entity.Follow;
@@ -109,8 +111,9 @@ public class MemberService {
 
         int followingCnt = Long.valueOf(followRepository.countByFromMember(member)).intValue();
         int followerCnt = Long.valueOf(followRepository.countByToMember(member)).intValue();
-
         List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
+
+        //TODO: MemberRes에 List<Article> 주입
 
         return  MemberRes.builder()
             .email(member.getEmail())
@@ -129,14 +132,12 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberRes update(HttpServletRequest request, MemberInfoUpdateForm form) {
+    public void update(HttpServletRequest request, MemberInfoUpdateForm form) {
         Member member = tokenProvider.getMemberFromToken(request);
         member = getMember(member.getId());
         member.updateName(form.getName());
 
         memberRepository.save(member);
-
-        return  MemberRes.from(member);
     }
 
     public List<BookmarkRes> getBookmarks(HttpServletRequest request) {
@@ -167,16 +168,43 @@ public class MemberService {
     public MemberRes getOtherMember(HttpServletRequest request, int otherMemberId) {
         Member member = tokenProvider.getMemberFromToken(request);
         member = memberRepository.findById(member.getId()).get();
-
         Member otherMember = memberRepository.findById(otherMemberId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
 
-        MemberRes memberRes = MemberRes.from(otherMember);
+        int followingCnt = Long.valueOf(followRepository.countByFromMember(otherMember)).intValue();
+        int followerCnt = Long.valueOf(followRepository.countByToMember(otherMember)).intValue();
+        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
+
+        //TODO: MemberRes에 List<Article> 주입
+
+        MemberRes memberRes = MemberRes.builder()
+            .email(otherMember.getEmail())
+            .name(otherMember.getName())
+            .articles(null)
+            .followingCnt(followingCnt)
+            .followerCnt(followerCnt)
+            .bookmarks(bookmarks.stream().map(e -> BookmarkRes.from(e)).collect(Collectors.toList()))
+            .build();
+
         if (followRepository.existsByFromMemberAndToMember(member, otherMember)) {
             memberRes.setFollowYn(true);
         }
 
         return memberRes;
+    }
+
+    public List<FollowingRes> getFollowings(HttpServletRequest request) {
+        Member member = tokenProvider.getMemberFromToken(request);
+        return followRepository.findByFromMember(member)
+            .stream().map(e -> FollowingRes.from(e))
+            .collect(Collectors.toList());
+    }
+
+    public List<FollowerRes> getFollowers(HttpServletRequest request) {
+        Member member = tokenProvider.getMemberFromToken(request);
+        return followRepository.findByToMember(member)
+            .stream().map(e -> FollowerRes.from(e))
+            .collect(Collectors.toList());
     }
 
     @Transactional
