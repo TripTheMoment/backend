@@ -7,7 +7,7 @@ import com.ssafy.moment.domain.entity.Review;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
 import com.ssafy.moment.repository.AttractionInfoRepository;
-import com.ssafy.moment.repository.ReviewRepository;
+import com.ssafy.moment.repository.AttractionReviewRepository;
 import com.ssafy.moment.security.TokenProvider;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class ReviewService {
+public class AttractionReviewService {
 
-    private final ReviewRepository reviewRepository;
+    private final AttractionReviewRepository reviewRepository;
     private final AttractionInfoRepository attractionInfoRepository;
     private final TokenProvider tokenProvider;
 

@@ -9,7 +9,7 @@ import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
 import com.ssafy.moment.repository.AttractionDescriptionRepository;
 import com.ssafy.moment.repository.AttractionInfoRepository;
-import com.ssafy.moment.repository.ReviewRepository;
+import com.ssafy.moment.repository.AttractionReviewRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class AttractionService {
 
     private final AttractionInfoRepository infoRepository;
     private final AttractionDescriptionRepository descriptionRepository;
-    private final ReviewRepository reviewRepository;
+    private final AttractionReviewRepository reviewRepository;
 
     public Page<AttractionInfo> getAttractionList(SearchReq searchReq, Pageable pageable) {
         Page<AttractionInfo> infos;

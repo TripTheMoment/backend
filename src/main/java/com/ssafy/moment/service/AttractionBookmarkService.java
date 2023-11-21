@@ -6,9 +6,8 @@ import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
 import com.ssafy.moment.repository.AttractionInfoRepository;
-import com.ssafy.moment.repository.BookmarkRepository;
+import com.ssafy.moment.repository.AttractionBookmarkRepository;
 import com.ssafy.moment.security.TokenProvider;
-import java.awt.print.Book;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class BookmarkService {
+public class AttractionBookmarkService {
 
-    private final BookmarkRepository bookmarkRepository;
+    private final AttractionBookmarkRepository bookmarkRepository;
     private final AttractionInfoRepository attractionInfoRepository;
     private final TokenProvider tokenProvider;
 

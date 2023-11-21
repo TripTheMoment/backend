@@ -9,7 +9,7 @@ import com.ssafy.moment.domain.entity.Bookmark;
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
-import com.ssafy.moment.repository.BookmarkRepository;
+import com.ssafy.moment.repository.AttractionBookmarkRepository;
 import com.ssafy.moment.repository.MemberRepository;
 import com.ssafy.moment.security.TokenProvider;
 import com.ssafy.moment.util.MailUtil;
@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final BookmarkRepository bookmarkRepository;
+    private final AttractionBookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final MailUtil mailUtil;

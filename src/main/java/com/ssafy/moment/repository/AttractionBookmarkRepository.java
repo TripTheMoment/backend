@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BookmarkRepository extends JpaRepository<Bookmark, Integer> {
+public interface AttractionBookmarkRepository extends JpaRepository<Bookmark, Integer> {
 
     Optional<Bookmark> findByAttractionInfoAndMember(AttractionInfo info, Member member);
     List<Bookmark> findByMember(Member member);

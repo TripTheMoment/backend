@@ -7,8 +7,8 @@ import com.ssafy.moment.domain.dto.response.AttractionOverviewRes;
 import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.domain.entity.AttractionInfo;
 import com.ssafy.moment.service.AttractionService;
-import com.ssafy.moment.service.BookmarkService;
-import com.ssafy.moment.service.ReviewService;
+import com.ssafy.moment.service.AttractionBookmarkService;
+import com.ssafy.moment.service.AttractionReviewService;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AttractionController {
 
     private final AttractionService attractionService;
-    private final ReviewService reviewService;
-    private final BookmarkService bookmarkService;
+    private final AttractionReviewService reviewService;
+    private final AttractionBookmarkService bookmarkService;
 
     @PostMapping
     public ResponseDto<Page<AttractionOverviewRes>> getList(
