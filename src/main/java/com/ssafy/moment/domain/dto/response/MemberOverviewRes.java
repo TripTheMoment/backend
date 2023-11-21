@@ -12,14 +12,14 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FollowMemberRes {
+public class MemberOverviewRes {
 
     private int id;
     private String name;
     private String profileImgUrl;
 
-    public static FollowMemberRes from(Member member) {
-        return FollowMemberRes.builder()
+    public static MemberOverviewRes from(Member member) {
+        return MemberOverviewRes.builder()
             .id(member.getId())
             .profileImgUrl(member.getProfileImgUrl())
             .name(member.getName())

@@ -15,12 +15,12 @@ import lombok.Setter;
 public class FollowerRes {
 
     private int id;
-    private FollowMemberRes member;
+    private MemberOverviewRes member;
 
     public static FollowerRes from(Follow follow) {
         return FollowerRes.builder()
             .id(follow.getId())
-            .member(FollowMemberRes.from(follow.getFromMember()))
+            .member(MemberOverviewRes.from(follow.getFromMember()))
             .build();
     }
 }

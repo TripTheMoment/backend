@@ -1,5 +1,6 @@
 package com.ssafy.moment.domain.entity;
 
+import com.ssafy.moment.domain.dto.request.ArticleForm;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,9 +24,25 @@ public class Article {
     private String title;
     @Column(name = "article_content")
     private String content;
+    private String imgUrl;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public static Article of(ArticleForm form, Member member) {
+        return Article.builder()
+            .title(form.getTitle())
+            .content(form.getContent())
+            .imgUrl(form.getImgUrl())
+            .member(member)
+            .build();
+    }
+
+    public void update(ArticleForm form) {
+        this.title = form.getTitle();
+        this.content = form.getContent();
+        this.imgUrl = form.getImgUrl();
+    }
 
 }
