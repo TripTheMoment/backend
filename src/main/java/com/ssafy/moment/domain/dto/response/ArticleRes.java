@@ -2,6 +2,8 @@ package com.ssafy.moment.domain.dto.response;
 
 import com.ssafy.moment.domain.entity.Article;
 import com.ssafy.moment.domain.entity.Member;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +22,7 @@ public class ArticleRes {
     private String content;
     private String imgUrl;
     private MemberOverviewRes member;
+    private List<ReplyRes> replies;
 
     public static ArticleRes of(Article article, Member member) {
         return ArticleRes.builder()
@@ -28,6 +31,9 @@ public class ArticleRes {
             .content(article.getContent())
             .imgUrl(article.getImgUrl())
             .member(MemberOverviewRes.from(member))
+            .replies(article.getReplies().stream()
+                .map(e -> ReplyRes.of(e, e.getMember()))
+                .collect(Collectors.toList()))
             .build();
     }
 

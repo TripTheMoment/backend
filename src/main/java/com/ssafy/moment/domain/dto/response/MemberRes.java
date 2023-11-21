@@ -1,9 +1,5 @@
 package com.ssafy.moment.domain.dto.response;
 
-import com.ssafy.moment.domain.entity.Article;
-import com.ssafy.moment.domain.entity.Bookmark;
-import com.ssafy.moment.domain.entity.Follow;
-import com.ssafy.moment.domain.entity.Member;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;

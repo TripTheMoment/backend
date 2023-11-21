@@ -1,6 +1,7 @@
 package com.ssafy.moment.domain.entity;
 
 import com.ssafy.moment.domain.dto.request.ArticleForm;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,9 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+    private List<Reply> replies;
 
     public static Article of(ArticleForm form, Member member) {
         return Article.builder()
