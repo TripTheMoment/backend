@@ -66,10 +66,10 @@ public class MemberController {
         return ResponseDto.success("MEMBER UPDATE SUCCESS");
     }
 
-    @GetMapping("/bookmarks")
-    public ResponseDto<?> getBookmarks(HttpServletRequest request) {
-        return ResponseDto.success(memberService.getBookmarks(request));
-    }
+//    @GetMapping("/bookmarks")
+//    public ResponseDto<?> getBookmarks(HttpServletRequest request) {
+//        return ResponseDto.success(memberService.getBookmarks(request));
+//    }
 
     @DeleteMapping("/bookmarks/{id}")
     public ResponseDto<?> deleteBookmark(HttpServletRequest request, @PathVariable int id) {

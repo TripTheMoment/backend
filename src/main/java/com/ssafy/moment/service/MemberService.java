@@ -140,13 +140,13 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public List<BookmarkRes> getBookmarks(HttpServletRequest request) {
-        Member member = tokenProvider.getMemberFromToken(request);
-        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
-        return bookmarks.stream()
-            .map(e -> BookmarkRes.from(e))
-            .collect(Collectors.toList());
-    }
+//    public List<BookmarkRes> getBookmarks(HttpServletRequest request) {
+//        Member member = tokenProvider.getMemberFromToken(request);
+//        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
+//        return bookmarks.stream()
+//            .map(e -> BookmarkRes.from(e))
+//            .collect(Collectors.toList());
+//    }
 
     @Transactional
     public void deleteBookmark(HttpServletRequest request, int bookmarkId) {
