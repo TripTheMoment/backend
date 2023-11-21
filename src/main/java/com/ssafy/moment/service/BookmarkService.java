@@ -27,6 +27,13 @@ public class BookmarkService {
     public void create(HttpServletRequest request, int contentId) {
         Member member = tokenProvider.getMemberFromToken(request);
         AttractionInfo attractionInfo = getAttractionInfoById(contentId);
+
+        // 기존에 등록된 북마크가 있는지 확인
+        Optional<Bookmark> optBookmark = bookmarkRepository.findByAttractionInfoAndMember(attractionInfo, member);
+        if (optBookmark.isPresent()) {
+            throw new CustomException(ErrorCode.ALREADY_EXIST_BOOKMARK);
+        }
+
         Bookmark bookmark = Bookmark.of(attractionInfo, member);
         bookmarkRepository.save(bookmark);
     }
@@ -40,13 +47,7 @@ public class BookmarkService {
     public void delete(HttpServletRequest request, int contentId) {
         Member member = tokenProvider.getMemberFromToken(request);
         AttractionInfo attractionInfo = getAttractionInfoById(contentId);
-
-        Optional<Bookmark> optBookmark = bookmarkRepository.findByAttractionInfoAndMember(attractionInfo, member);
-        if (optBookmark.isPresent()) {
-            throw new CustomException(ErrorCode.ALREADY_EXIST_BOOKMARK);
-        }
-
-        bookmarkRepository.delete(optBookmark.get());
+        bookmarkRepository.deleteByAttractionInfoAndMember(attractionInfo, member);
     }
 
 }

@@ -65,7 +65,7 @@ public class AttractionController {
     }
 
     @DeleteMapping("/{contentId}/bookmarks")
-    public ResponseDto<?> deleteBookmark(@PathVariable int contentId, @PathVariable int reviewId, HttpServletRequest request) {
+    public ResponseDto<?> deleteBookmark(@PathVariable int contentId, HttpServletRequest request) {
         bookmarkService.delete(request, contentId);
         return ResponseDto.success("DELETE REVIEW SUCCESS");
     }
