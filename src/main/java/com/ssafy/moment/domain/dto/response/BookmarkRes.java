@@ -19,7 +19,7 @@ public class BookmarkRes {
     public static BookmarkRes from(Bookmark bookmark) {
         return BookmarkRes.builder()
             .id(bookmark.getId())
-            .contentId(bookmark.getId())
+            .contentId(bookmark.getAttractionInfo().getId())
             .memberId(bookmark.getId())
             .build();
     }
