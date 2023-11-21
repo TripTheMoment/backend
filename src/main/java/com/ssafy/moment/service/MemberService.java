@@ -6,6 +6,7 @@ import com.ssafy.moment.domain.dto.request.SignupReq;
 import com.ssafy.moment.domain.dto.response.BookmarkRes;
 import com.ssafy.moment.domain.dto.response.MemberRes;
 import com.ssafy.moment.domain.entity.Bookmark;
+import com.ssafy.moment.domain.entity.Follow;
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
@@ -106,7 +107,20 @@ public class MemberService {
         Member member = tokenProvider.getMemberFromToken(request);
         member = getMember(member.getId());
 
-        return  MemberRes.from(member);
+        int followingCnt = Long.valueOf(followRepository.countByFromMember(member)).intValue();
+        int followerCnt = Long.valueOf(followRepository.countByToMember(member)).intValue();
+
+        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
+
+        return  MemberRes.builder()
+            .email(member.getEmail())
+            .name(member.getName())
+            .articles(null)
+            .followingCnt(followingCnt)
+            .followerCnt(followerCnt)
+            .bookmarks(bookmarks.stream().map(e -> BookmarkRes.from(e)).collect(Collectors.toList()))
+            .createdAt(member.getCreatedAt())
+            .build();
     }
 
     private Member getMember(int memberId) {
@@ -163,6 +177,30 @@ public class MemberService {
         }
 
         return memberRes;
+    }
+
+    @Transactional
+    public void createFollow(HttpServletRequest request, int targetMemberId) {
+        Member fromMember = tokenProvider.getMemberFromToken(request);
+        Member toMember = getMember(targetMemberId);
+
+        if (followRepository.existsByFromMemberAndToMember(fromMember, toMember)) {
+            throw new CustomException(ErrorCode.ALREADY_EXIST_FOLLOW);
+        }
+
+        Follow follow = Follow.of(fromMember, toMember);
+        followRepository.save(follow);
+    }
+
+    @Transactional
+    public void deleteFollow(HttpServletRequest request, int targetMemberId) {
+        Member fromMember = tokenProvider.getMemberFromToken(request);
+        Member toMember = getMember(targetMemberId);
+
+        Follow follow = followRepository.findByFromMemberAndToMember(fromMember, toMember)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_FOLLOW));
+
+        followRepository.delete(follow);
     }
 
 }

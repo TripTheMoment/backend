@@ -32,7 +32,11 @@ public enum ErrorCode {
     NOT_FOUND_INFO(HttpStatus.BAD_REQUEST, "아이디에 해당하는 관광지 정보가 없습니다."),
 
     // 북마크
-    ALREADY_EXIST_BOOKMARK(HttpStatus.BAD_REQUEST, "이미 북마크가 등록되어있습니다.")
+    ALREADY_EXIST_BOOKMARK(HttpStatus.BAD_REQUEST, "이미 북마크가 등록되어있습니다."),
+
+    // 팔로우
+    ALREADY_EXIST_FOLLOW(HttpStatus.BAD_REQUEST, "이미 팔로우가 등록되어있습니다."),
+    NOT_FOUND_FOLLOW(HttpStatus.BAD_REQUEST, "팔로우가 존재하지 않습니다.")
     ;
 
     private final HttpStatus httpStatus;

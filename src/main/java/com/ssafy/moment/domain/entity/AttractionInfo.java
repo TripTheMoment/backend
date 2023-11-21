@@ -1,6 +1,5 @@
 package com.ssafy.moment.domain.entity;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,10 +34,10 @@ public class AttractionInfo {
     private int hit;
     private String mlevel;
 
-    @OneToMany(mappedBy = "attractionInfo")
-    private List<Bookmark> bookmarks;
-
-    @OneToMany(mappedBy = "attractionInfo")
-    private List<Review> reviews;
+//    @OneToMany(mappedBy = "attractionInfo")
+//    private List<Bookmark> bookmarks;
+//
+//    @OneToMany(mappedBy = "attractionInfo")
+//    private List<Review> reviews;
 
 }

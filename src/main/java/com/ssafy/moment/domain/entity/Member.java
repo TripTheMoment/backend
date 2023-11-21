@@ -1,5 +1,7 @@
 package com.ssafy.moment.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,17 +31,21 @@ public class Member extends BaseEntity {
     private boolean emailAuthYn;
     private String emailAuthKey;
 
-    @OneToMany(mappedBy = "member")
-    private List<Article> articles;
-
-    @OneToMany(mappedBy = "fromMember")
-    private List<Follow> followings;
-
-    @OneToMany(mappedBy = "toMember")
-    private List<Follow> followers;
-
-    @OneToMany(mappedBy = "member")
-    private List<Bookmark> bookmarks;
+//    @OneToMany(mappedBy = "member")
+//    @JsonManagedReference
+//    private List<Article> articles;
+//
+//    @OneToMany(mappedBy = "fromMember")
+//    @JsonManagedReference
+//    private List<Follow> followings;
+//
+//    @OneToMany(mappedBy = "toMember")
+//    @JsonManagedReference
+//    private List<Follow> followers;
+//
+//    @OneToMany(mappedBy = "member")
+//    @JsonManagedReference
+//    private List<Bookmark> bookmarks;
 
     public void inactive() {
         this.status = false;

@@ -80,4 +80,16 @@ public class MemberController {
         return ResponseDto.success(memberService.getOtherMember(request, memberId));
     }
 
+    @PostMapping("/follows/{targetMemberId}")
+    public ResponseDto<?> createFollow(HttpServletRequest request, @PathVariable int targetMemberId) {
+        memberService.createFollow(request, targetMemberId);
+        return ResponseDto.success("CREATE FOLLOW SUCCESS");
+    }
+
+    @DeleteMapping ("/follows/{targetMemberId}")
+    public ResponseDto<?> deleteFollow(HttpServletRequest request, @PathVariable int targetMemberId) {
+        memberService.deleteFollow(request, targetMemberId);
+        return ResponseDto.success("DELETE FOLLOW SUCCESS");
+    }
+
 }

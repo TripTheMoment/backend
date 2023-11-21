@@ -7,6 +7,7 @@ import com.ssafy.moment.domain.entity.AttractionInfo;
 import com.ssafy.moment.domain.entity.Review;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
+import com.ssafy.moment.repository.AttractionBookmarkRepository;
 import com.ssafy.moment.repository.AttractionDescriptionRepository;
 import com.ssafy.moment.repository.AttractionInfoRepository;
 import com.ssafy.moment.repository.AttractionReviewRepository;
@@ -24,6 +25,7 @@ public class AttractionService {
     private final AttractionInfoRepository infoRepository;
     private final AttractionDescriptionRepository descriptionRepository;
     private final AttractionReviewRepository reviewRepository;
+    private final AttractionBookmarkRepository bookmarkRepository;
 
     public Page<AttractionInfo> getAttractionList(SearchReq searchReq, Pageable pageable) {
         Page<AttractionInfo> infos;
@@ -45,9 +47,12 @@ public class AttractionService {
         AttractionInfo info = getAttractionInfoById(id);
         List<Review> reviews = getReviewsByContentId(info);
 
+        int bookmarkCnt = Long.valueOf(bookmarkRepository.countByAttractionInfo(info)).intValue();
+
         AttractionDetailRes res = AttractionDetailRes.from(info);
         res.setDescription(descriptionRepository.findById(id).get().getOverview());
         res.setReviewResList(reviews.stream().map(r -> ReviewRes.from(r)).collect(Collectors.toList()));
+        res.setBookmarkCnt(bookmarkCnt);
 
         return res;
     }

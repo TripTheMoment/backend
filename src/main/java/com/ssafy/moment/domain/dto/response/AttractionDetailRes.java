@@ -1,7 +1,6 @@
 package com.ssafy.moment.domain.dto.response;
 
 import com.ssafy.moment.domain.entity.AttractionInfo;
-import com.ssafy.moment.domain.entity.Review;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,7 +43,7 @@ public class AttractionDetailRes {
             .latitude(info.getLatitude())
             .longitude(info.getLongitude())
             .hit(info.getHit())
-            .bookmarkCnt(info.getBookmarks().size())
+//            .bookmarkCnt(info.getBookmarks().size())
             .build();
     }
 

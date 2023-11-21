@@ -22,22 +22,10 @@ public class MemberRes {
     private String email;
     private String name;
     private boolean followYn;
-    private List<Article> articles;
-    private List<Follow> followings;
-    private List<Follow> followers;
-    private List<Bookmark> bookmarks;
+    private List<ArticleRes> articles;
+    private int followingCnt;
+    private int followerCnt;
+    private List<BookmarkRes> bookmarks;
     private LocalDateTime createdAt;
-
-    public static MemberRes from(Member member) {
-        return MemberRes.builder()
-            .email(member.getEmail())
-            .name(member.getName())
-            .articles(member.getArticles())
-            .followings(member.getFollowings())
-            .followers(member.getFollowers())
-            .bookmarks(member.getBookmarks())
-            .createdAt(member.getCreatedAt())
-            .build();
-    }
 
 }

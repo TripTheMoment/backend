@@ -32,4 +32,11 @@ public class Follow {
     @JoinColumn(name = "to_member_id")
     private Member toMember;
 
+    public static Follow of(Member fromMember, Member toMember) {
+        return Follow.builder()
+            .fromMember(fromMember)
+            .toMember(toMember)
+            .build();
+    }
+
 }

@@ -14,4 +14,5 @@ public interface AttractionBookmarkRepository extends JpaRepository<Bookmark, In
     Optional<Bookmark> findByAttractionInfoAndMember(AttractionInfo info, Member member);
     List<Bookmark> findByMember(Member member);
     void deleteByAttractionInfoAndMember(AttractionInfo info, Member member);
+    Long countByAttractionInfo(AttractionInfo info);
 }
