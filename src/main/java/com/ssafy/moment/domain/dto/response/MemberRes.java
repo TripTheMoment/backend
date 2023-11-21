@@ -19,6 +19,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MemberRes {
 
+    private int id;
     private String email;
     private String name;
     private String profileImgUrl;

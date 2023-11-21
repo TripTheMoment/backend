@@ -178,12 +178,14 @@ public class MemberService {
         //TODO: MemberRes에 List<Article> 주입
 
         MemberRes memberRes = MemberRes.builder()
+            .id(otherMemberId)
             .email(otherMember.getEmail())
             .name(otherMember.getName())
             .articles(null)
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
             .bookmarks(bookmarks.stream().map(e -> BookmarkRes.from(e)).collect(Collectors.toList()))
+            .createdAt(otherMember.getCreatedAt())
             .build();
 
         if (followRepository.existsByFromMemberAndToMember(member, otherMember)) {
