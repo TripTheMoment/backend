@@ -10,6 +10,7 @@ import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
 import com.ssafy.moment.repository.AttractionBookmarkRepository;
+import com.ssafy.moment.repository.FollowRepository;
 import com.ssafy.moment.repository.MemberRepository;
 import com.ssafy.moment.security.TokenProvider;
 import com.ssafy.moment.util.MailUtil;
@@ -28,6 +29,8 @@ public class MemberService {
 
     private final AttractionBookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
+    private final FollowRepository followRepository;
+
     private final TokenProvider tokenProvider;
     private final MailUtil mailUtil;
 
@@ -145,6 +148,21 @@ public class MemberService {
     private Bookmark getBookmarkById(int bookmarkId) {
         return bookmarkRepository.findById(bookmarkId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+    }
+
+    public MemberRes getOtherMember(HttpServletRequest request, int otherMemberId) {
+        Member member = tokenProvider.getMemberFromToken(request);
+        member = memberRepository.findById(member.getId()).get();
+
+        Member otherMember = memberRepository.findById(otherMemberId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+
+        MemberRes memberRes = MemberRes.from(otherMember);
+        if (followRepository.existsByFromMemberAndToMember(member, otherMember)) {
+            memberRes.setFollowYn(true);
+        }
+
+        return memberRes;
     }
 
 }

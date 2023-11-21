@@ -32,10 +32,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Article> articles;
 
-    @OneToMany(mappedBy = "fromMemberId")
+    @OneToMany(mappedBy = "fromMember")
     private List<Follow> followings;
 
-    @OneToMany(mappedBy = "toMemberId")
+    @OneToMany(mappedBy = "toMember")
     private List<Follow> followers;
 
     @OneToMany(mappedBy = "member")

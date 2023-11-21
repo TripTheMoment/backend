@@ -26,10 +26,10 @@ public class Follow {
 
     @ManyToOne
     @JoinColumn(name = "from_member_id")
-    private Member fromMemberId;
+    private Member fromMember;
 
     @ManyToOne
     @JoinColumn(name = "to_member_id")
-    private Member toMemberId;
+    private Member toMember;
 
 }

@@ -75,4 +75,9 @@ public class MemberController {
         return ResponseDto.success("BOOKMARK DELETE SUCCESS");
     }
 
+    @GetMapping("/{memberId}")
+    public ResponseDto<?> getOtherMember(HttpServletRequest request, @PathVariable int memberId) {
+        return ResponseDto.success(memberService.getOtherMember(request, memberId));
+    }
+
 }
