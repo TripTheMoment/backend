@@ -1,0 +1,22 @@
+package com.ssafy.moment.domain.entity;
+
+import javax.persistence.EntityListeners;
+import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import javax.persistence.MappedSuperclass;
+import java.time.LocalDateTime;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+@Getter
+@MappedSuperclass
+@EntityListeners(value = {AuditingEntityListener.class})
+public abstract class BaseEntity {
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    private LocalDateTime modifiedAt;
+
+}
