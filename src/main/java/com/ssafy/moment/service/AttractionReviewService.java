@@ -1,15 +1,14 @@
 package com.ssafy.moment.service;
 
+import com.ssafy.moment.domain.dto.request.ReviewForm;
 import com.ssafy.moment.domain.entity.AttractionInfo;
-import com.ssafy.moment.domain.entity.Bookmark;
 import com.ssafy.moment.domain.entity.Member;
+import com.ssafy.moment.domain.entity.Review;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
 import com.ssafy.moment.repository.AttractionInfoRepository;
-import com.ssafy.moment.repository.BookmarkRepository;
+import com.ssafy.moment.repository.AttractionReviewRepository;
 import com.ssafy.moment.security.TokenProvider;
-import java.awt.print.Book;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,18 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class BookmarkService {
+public class AttractionReviewService {
 
-    private final BookmarkRepository bookmarkRepository;
+    private final AttractionReviewRepository reviewRepository;
     private final AttractionInfoRepository attractionInfoRepository;
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public void create(HttpServletRequest request, int contentId) {
+    public void create(ReviewForm reviewForm, int contentId, HttpServletRequest request) {
         Member member = tokenProvider.getMemberFromToken(request);
         AttractionInfo attractionInfo = getAttractionInfoById(contentId);
-        Bookmark bookmark = Bookmark.of(attractionInfo, member);
-        bookmarkRepository.save(bookmark);
+        Review review = Review.of(member, attractionInfo, reviewForm);
+
+        reviewRepository.save(review);
     }
 
     private AttractionInfo getAttractionInfoById(int contentId) {
@@ -37,16 +37,20 @@ public class BookmarkService {
     }
 
     @Transactional
-    public void delete(HttpServletRequest request, int contentId) {
+    public void delete(int reviewId, HttpServletRequest request) {
         Member member = tokenProvider.getMemberFromToken(request);
-        AttractionInfo attractionInfo = getAttractionInfoById(contentId);
+        Review review = getReviewById(reviewId);
 
-        Optional<Bookmark> optBookmark = bookmarkRepository.findByAttractionInfoAndMember(attractionInfo, member);
-        if (optBookmark.isPresent()) {
-            throw new CustomException(ErrorCode.ALREADY_EXIST_BOOKMARK);
+        if (review.getMember().getId() != member.getId()) {
+            throw new CustomException(ErrorCode.NO_AUTHORITY);
         }
 
-        bookmarkRepository.delete(optBookmark.get());
+        reviewRepository.delete(review);
+    }
+
+    private Review getReviewById(int reviewId) {
+        return reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
     }
 
 }

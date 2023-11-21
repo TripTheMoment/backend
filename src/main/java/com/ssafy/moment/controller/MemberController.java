@@ -3,6 +3,8 @@ package com.ssafy.moment.controller;
 import com.ssafy.moment.domain.dto.request.MemberInfoUpdateForm;
 import com.ssafy.moment.domain.dto.request.PasswordResetReq;
 import com.ssafy.moment.domain.dto.request.SignupReq;
+import com.ssafy.moment.domain.dto.response.FollowerRes;
+import com.ssafy.moment.domain.dto.response.FollowingRes;
 import com.ssafy.moment.domain.dto.response.MemberRes;
 import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.exception.ErrorCode;
@@ -60,19 +62,46 @@ public class MemberController {
     @PatchMapping("/detail")
     public ResponseDto<?> updateMemberInfo(HttpServletRequest request, @RequestBody
         MemberInfoUpdateForm form) {
-        MemberRes member = memberService.update(request, form);
-        return ResponseDto.success(member);
+        memberService.update(request, form);
+        return ResponseDto.success("MEMBER UPDATE SUCCESS");
     }
 
-    @GetMapping("/bookmarks")
-    public ResponseDto<?> getBookmarks(HttpServletRequest request) {
-        return ResponseDto.success(memberService.getBookmarks(request));
-    }
+//    @GetMapping("/bookmarks")
+//    public ResponseDto<?> getBookmarks(HttpServletRequest request) {
+//        return ResponseDto.success(memberService.getBookmarks(request));
+//    }
 
     @DeleteMapping("/bookmarks/{id}")
     public ResponseDto<?> deleteBookmark(HttpServletRequest request, @PathVariable int id) {
         memberService.deleteBookmark(request, id);
         return ResponseDto.success("BOOKMARK DELETE SUCCESS");
+    }
+
+    @GetMapping("/{memberId}")
+    public ResponseDto<?> getOtherMember(HttpServletRequest request, @PathVariable int memberId) {
+        return ResponseDto.success(memberService.getOtherMember(request, memberId));
+    }
+
+    @GetMapping("/follows/followings")
+    public ResponseDto<?> getFollowings(HttpServletRequest request) {
+        return ResponseDto.success(memberService.getFollowings(request));
+    }
+
+    @GetMapping("/follows/followers")
+    public ResponseDto<?> getFollowers(HttpServletRequest request) {
+        return ResponseDto.success(memberService.getFollowers(request));
+    }
+
+    @PostMapping("/follows/{targetMemberId}")
+    public ResponseDto<?> createFollow(HttpServletRequest request, @PathVariable int targetMemberId) {
+        memberService.createFollow(request, targetMemberId);
+        return ResponseDto.success("CREATE FOLLOW SUCCESS");
+    }
+
+    @DeleteMapping ("/follows/{targetMemberId}")
+    public ResponseDto<?> deleteFollow(HttpServletRequest request, @PathVariable int targetMemberId) {
+        memberService.deleteFollow(request, targetMemberId);
+        return ResponseDto.success("DELETE FOLLOW SUCCESS");
     }
 
 }

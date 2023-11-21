@@ -38,4 +38,5 @@ public class Bookmark {
             .member(member)
             .build();
     }
+
 }

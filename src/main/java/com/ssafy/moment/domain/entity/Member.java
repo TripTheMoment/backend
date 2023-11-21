@@ -1,12 +1,14 @@
 package com.ssafy.moment.domain.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -23,23 +25,28 @@ public class Member extends BaseEntity {
     private String email;
     private String password;
     private String name;
+    private String profileImgUrl;
     @Builder.Default
     private boolean status = true;
     private String userRole;
     private boolean emailAuthYn;
     private String emailAuthKey;
 
-    @OneToMany(mappedBy = "member")
-    private List<Article> articles;
-
-    @OneToMany(mappedBy = "fromMemberId")
-    private List<Follow> followings;
-
-    @OneToMany(mappedBy = "toMemberId")
-    private List<Follow> followers;
-
-    @OneToMany(mappedBy = "member")
-    private List<Bookmark> bookmarks;
+//    @OneToMany(mappedBy = "member")
+//    @JsonManagedReference
+//    private List<Article> articles;
+//
+//    @OneToMany(mappedBy = "fromMember")
+//    @JsonManagedReference
+//    private List<Follow> followings;
+//
+//    @OneToMany(mappedBy = "toMember")
+//    @JsonManagedReference
+//    private List<Follow> followers;
+//
+//    @OneToMany(mappedBy = "member")
+//    @JsonManagedReference
+//    private List<Bookmark> bookmarks;
 
     public void inactive() {
         this.status = false;

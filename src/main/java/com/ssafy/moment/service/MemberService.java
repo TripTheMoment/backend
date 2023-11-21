@@ -4,12 +4,16 @@ import com.ssafy.moment.domain.dto.request.MemberInfoUpdateForm;
 import com.ssafy.moment.domain.dto.request.PasswordResetReq;
 import com.ssafy.moment.domain.dto.request.SignupReq;
 import com.ssafy.moment.domain.dto.response.BookmarkRes;
+import com.ssafy.moment.domain.dto.response.FollowerRes;
+import com.ssafy.moment.domain.dto.response.FollowingRes;
 import com.ssafy.moment.domain.dto.response.MemberRes;
 import com.ssafy.moment.domain.entity.Bookmark;
+import com.ssafy.moment.domain.entity.Follow;
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
-import com.ssafy.moment.repository.BookmarkRepository;
+import com.ssafy.moment.repository.AttractionBookmarkRepository;
+import com.ssafy.moment.repository.FollowRepository;
 import com.ssafy.moment.repository.MemberRepository;
 import com.ssafy.moment.security.TokenProvider;
 import com.ssafy.moment.util.MailUtil;
@@ -26,8 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final BookmarkRepository bookmarkRepository;
+    private final AttractionBookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
+    private final FollowRepository followRepository;
+
     private final TokenProvider tokenProvider;
     private final MailUtil mailUtil;
 
@@ -103,7 +109,21 @@ public class MemberService {
         Member member = tokenProvider.getMemberFromToken(request);
         member = getMember(member.getId());
 
-        return  MemberRes.from(member);
+        int followingCnt = Long.valueOf(followRepository.countByFromMember(member)).intValue();
+        int followerCnt = Long.valueOf(followRepository.countByToMember(member)).intValue();
+        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
+
+        //TODO: MemberRes에 List<Article> 주입
+
+        return  MemberRes.builder()
+            .email(member.getEmail())
+            .name(member.getName())
+            .articles(null)
+            .followingCnt(followingCnt)
+            .followerCnt(followerCnt)
+            .bookmarks(bookmarks.stream().map(e -> BookmarkRes.from(e)).collect(Collectors.toList()))
+            .createdAt(member.getCreatedAt())
+            .build();
     }
 
     private Member getMember(int memberId) {
@@ -112,23 +132,21 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberRes update(HttpServletRequest request, MemberInfoUpdateForm form) {
+    public void update(HttpServletRequest request, MemberInfoUpdateForm form) {
         Member member = tokenProvider.getMemberFromToken(request);
         member = getMember(member.getId());
         member.updateName(form.getName());
 
         memberRepository.save(member);
-
-        return  MemberRes.from(member);
     }
 
-    public List<BookmarkRes> getBookmarks(HttpServletRequest request) {
-        Member member = tokenProvider.getMemberFromToken(request);
-        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
-        return bookmarks.stream()
-            .map(e -> BookmarkRes.from(e))
-            .collect(Collectors.toList());
-    }
+//    public List<BookmarkRes> getBookmarks(HttpServletRequest request) {
+//        Member member = tokenProvider.getMemberFromToken(request);
+//        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
+//        return bookmarks.stream()
+//            .map(e -> BookmarkRes.from(e))
+//            .collect(Collectors.toList());
+//    }
 
     @Transactional
     public void deleteBookmark(HttpServletRequest request, int bookmarkId) {
@@ -145,6 +163,74 @@ public class MemberService {
     private Bookmark getBookmarkById(int bookmarkId) {
         return bookmarkRepository.findById(bookmarkId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+    }
+
+    public MemberRes getOtherMember(HttpServletRequest request, int otherMemberId) {
+        Member member = tokenProvider.getMemberFromToken(request);
+        member = memberRepository.findById(member.getId()).get();
+        Member otherMember = memberRepository.findById(otherMemberId)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+
+        int followingCnt = Long.valueOf(followRepository.countByFromMember(otherMember)).intValue();
+        int followerCnt = Long.valueOf(followRepository.countByToMember(otherMember)).intValue();
+        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
+
+        //TODO: MemberRes에 List<Article> 주입
+
+        MemberRes memberRes = MemberRes.builder()
+            .id(otherMemberId)
+            .email(otherMember.getEmail())
+            .name(otherMember.getName())
+            .articles(null)
+            .followingCnt(followingCnt)
+            .followerCnt(followerCnt)
+            .bookmarks(bookmarks.stream().map(e -> BookmarkRes.from(e)).collect(Collectors.toList()))
+            .createdAt(otherMember.getCreatedAt())
+            .build();
+
+        if (followRepository.existsByFromMemberAndToMember(member, otherMember)) {
+            memberRes.setFollowYn(true);
+        }
+
+        return memberRes;
+    }
+
+    public List<FollowingRes> getFollowings(HttpServletRequest request) {
+        Member member = tokenProvider.getMemberFromToken(request);
+        return followRepository.findByFromMember(member)
+            .stream().map(e -> FollowingRes.from(e))
+            .collect(Collectors.toList());
+    }
+
+    public List<FollowerRes> getFollowers(HttpServletRequest request) {
+        Member member = tokenProvider.getMemberFromToken(request);
+        return followRepository.findByToMember(member)
+            .stream().map(e -> FollowerRes.from(e))
+            .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void createFollow(HttpServletRequest request, int targetMemberId) {
+        Member fromMember = tokenProvider.getMemberFromToken(request);
+        Member toMember = getMember(targetMemberId);
+
+        if (followRepository.existsByFromMemberAndToMember(fromMember, toMember)) {
+            throw new CustomException(ErrorCode.ALREADY_EXIST_FOLLOW);
+        }
+
+        Follow follow = Follow.of(fromMember, toMember);
+        followRepository.save(follow);
+    }
+
+    @Transactional
+    public void deleteFollow(HttpServletRequest request, int targetMemberId) {
+        Member fromMember = tokenProvider.getMemberFromToken(request);
+        Member toMember = getMember(targetMemberId);
+
+        Follow follow = followRepository.findByFromMemberAndToMember(fromMember, toMember)
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_FOLLOW));
+
+        followRepository.delete(follow);
     }
 
 }

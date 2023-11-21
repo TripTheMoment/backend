@@ -28,6 +28,10 @@ public class Reply extends BaseEntity  {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne
+    @JoinColumn(name = "article_id")
+    private Article article;
+
     @Column(name = "reply_content")
     private String content;
 

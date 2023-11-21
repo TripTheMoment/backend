@@ -13,14 +13,12 @@ import lombok.NoArgsConstructor;
 public class BookmarkRes {
 
     private int id;
-    private int contentId;
-    private int memberId;
+    private AttractionOverviewRes info;
 
     public static BookmarkRes from(Bookmark bookmark) {
         return BookmarkRes.builder()
             .id(bookmark.getId())
-            .contentId(bookmark.getId())
-            .memberId(bookmark.getId())
+            .info(AttractionOverviewRes.from(bookmark.getAttractionInfo()))
             .build();
     }
 

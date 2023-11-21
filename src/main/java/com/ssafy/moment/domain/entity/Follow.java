@@ -26,10 +26,17 @@ public class Follow {
 
     @ManyToOne
     @JoinColumn(name = "from_member_id")
-    private Member fromMemberId;
+    private Member fromMember;
 
     @ManyToOne
     @JoinColumn(name = "to_member_id")
-    private Member toMemberId;
+    private Member toMember;
+
+    public static Follow of(Member fromMember, Member toMember) {
+        return Follow.builder()
+            .fromMember(fromMember)
+            .toMember(toMember)
+            .build();
+    }
 
 }
