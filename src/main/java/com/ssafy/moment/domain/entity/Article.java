@@ -25,7 +25,7 @@ public class Article extends BaseEntity {
     private String title;
     @Column(name = "article_content")
     private String content;
-    private String imgUrl;
+    private String imgKeyName;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -34,11 +34,11 @@ public class Article extends BaseEntity {
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<Reply> replies;
 
-    public static Article of(ArticleForm form, Member member) {
+    public static Article of(ArticleForm form, String keyName, Member member) {
         return Article.builder()
             .title(form.getTitle())
             .content(form.getContent())
-            .imgUrl(form.getImgUrl())
+            .imgKeyName(keyName)
             .member(member)
             .build();
     }
@@ -46,7 +46,6 @@ public class Article extends BaseEntity {
     public void update(ArticleForm form) {
         this.title = form.getTitle();
         this.content = form.getContent();
-        this.imgUrl = form.getImgUrl();
     }
 
 }

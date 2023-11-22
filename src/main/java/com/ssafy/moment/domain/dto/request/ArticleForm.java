@@ -13,6 +13,5 @@ public class ArticleForm {
 
     private String title;
     private String content;
-    private String imgUrl;
 
 }

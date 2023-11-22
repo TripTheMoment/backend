@@ -27,18 +27,4 @@ public class ArticleRes {
     private List<ReplyRes> replies;
     private LocalDateTime createdAt;
 
-    public static ArticleRes of(Article article, Member member) {
-        return ArticleRes.builder()
-            .id(article.getId())
-            .title(article.getTitle())
-            .content(article.getContent())
-            .imgUrl(article.getImgUrl())
-            .member(MemberOverviewRes.from(member))
-            .replies(article.getReplies().stream()
-                .map(e -> ReplyRes.of(e, e.getMember()))
-                .collect(Collectors.toList()))
-            .createdAt(article.getCreatedAt())
-            .build();
-    }
-
 }

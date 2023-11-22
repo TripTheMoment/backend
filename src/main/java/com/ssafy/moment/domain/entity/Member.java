@@ -25,7 +25,7 @@ public class Member extends BaseEntity {
     private String email;
     private String password;
     private String name;
-    private String profileImgUrl;
+    private String profileImgKeyName;
     @Builder.Default
     private boolean status = true;
     private String userRole;
@@ -61,8 +61,8 @@ public class Member extends BaseEntity {
     public void updateName(String name) {
         this.name = name;
     }
-    public void updateProfileImgUrl(String profileImgUrl) {
-        this.profileImgUrl = profileImgUrl;
+    public void updateProfileImgKeyName(String profileImgKeyName) {
+        this.profileImgKeyName = profileImgKeyName;
     }
 
 }
