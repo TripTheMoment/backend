@@ -8,6 +8,7 @@ import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.exception.ErrorCode;
 import com.ssafy.moment.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -60,12 +62,12 @@ public class MemberController {
         return ResponseDto.success("MEMBER UPDATE SUCCESS");
     }
 
-    @GetMapping("/{memberId}/bookmarks")
+    @GetMapping("/{memberId}/articles")
     public ResponseDto<?> getArticles(@PathVariable int memberId, Pageable pageable) {
         return ResponseDto.success(memberService.getArticlesByMember(memberId, pageable));
     }
 
-    @GetMapping("/{memberId}/articles")
+    @GetMapping("/{memberId}/bookmarks")
     public ResponseDto<?> getBookmarks(@PathVariable int memberId, Pageable pageable) {
         return ResponseDto.success(memberService.getBookmarksByMember(memberId, pageable));
     }
@@ -104,11 +106,12 @@ public class MemberController {
     }
 
     @PatchMapping("/profile")
-    public ResponseDto<?> saveProfile(HttpServletRequest request, @RequestPart(value = "profile", required = false) final MultipartFile multipartFile) {
+    public ResponseDto<?> updateProfileImg(HttpServletRequest request, @RequestPart(value = "file", required = false) final MultipartFile file) {
         try {
-            memberService.updateProfileImg(request, multipartFile);
+            memberService.updateProfileImg(request, file);
             return ResponseDto.success("UPLOAD SUCCESS");
         } catch (Exception e) {
+            log.error(e.getMessage());
             return ResponseDto.fail("UPLOAD FAIL");
         }
     }

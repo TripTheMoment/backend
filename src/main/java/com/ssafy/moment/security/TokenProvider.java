@@ -2,7 +2,6 @@ package com.ssafy.moment.security;
 
 import com.ssafy.moment.domain.UserDetailsImpl;
 import com.ssafy.moment.domain.dto.TokenDto;
-import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.domain.entity.BlacklistToken;
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.domain.entity.RefreshToken;
@@ -45,7 +44,7 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 1;  // 1 분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 1 * 10;  // 10 분
     private static final long REFRESH_TOKEN_EXPRIRE_TIME = 1000 * 60 * 60 * 24 * 1;  // 1 일
 
     private final Key key;

@@ -29,40 +29,40 @@ public class S3UploadService {
 
     public String upload(MultipartFile uploadFile, String path) throws IOException {
         String origName = uploadFile.getOriginalFilename();
-        String url;
+        String keyName;
         try {
             // 파일 확장자 추출
             final String ext = origName.substring(origName.lastIndexOf('.'));
             // 파일이름 암호화
-            final String saveFileName = getUuid() + ext;
+            final String fileName = getUuid() + ext;
             // 파일 객체 생성
             // System.getProperty => 시스템 환경에 관한 정보를 얻을 수 있다. (user.dir = 현재 작업 디렉토리를 의미함)
-            File file = new File(System.getProperty("user.dir") + "/" + saveFileName);
-            System.out.println(saveFileName);
+            File file = new File(System.getProperty("user.dir") + "/" + fileName);
+
+            keyName = path + "/" + fileName;
             // 파일 변환
             uploadFile.transferTo(file);
             // S3 파일 업로드
-            uploadOnS3(path, saveFileName, file);
-            // 주소 할당
-            url = defaultUrl + path + "/" + saveFileName;
+            uploadOnS3(path, keyName, file);
+
             // 파일 삭제
             file.delete();
         } catch (StringIndexOutOfBoundsException e) {
-            url = null;
-            log.error(e.getMessage());
+            keyName = null;
+            log.error("uploadService.upload() : "+e.getMessage());
         }
-        return url;
+        return keyName;
     }
 
     private static String getUuid() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    private void uploadOnS3(String path, final String findName, final File file) {
+    private void uploadOnS3(String path, final String keyName, final File file) {
         // AWS S3 전송 객체 생성
         final TransferManager transferManager = new TransferManager(this.amazonS3Client);
         // 요청 객체 생성
-        final PutObjectRequest request = new PutObjectRequest(bucket, path + "/" + findName, file);
+        final PutObjectRequest request = new PutObjectRequest(bucket, keyName, file);
         // 업로드 시도
         final Upload upload =  transferManager.upload(request);
 
@@ -75,8 +75,8 @@ public class S3UploadService {
         }
     }
 
-    public void delete(String originalFilename)  {
-        amazonS3Client.deleteObject(bucket, originalFilename);
+    public void delete(String keyName) {
+        amazonS3Client.deleteObject(bucket, keyName);
     }
 
 }

@@ -22,18 +22,20 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
+    @Value("${cloud.aws.s3.url}")
+    private String defaultUrl;
 
     private final S3UploadService s3UploadService;
 
@@ -124,7 +126,7 @@ public class MemberService {
             .id(member.getId())
             .email(member.getEmail())
             .name(member.getName())
-            .profileImgUrl(member.getProfileImgUrl())
+            .profileImgUrl(defaultUrl + member.getProfileImgKeyName())
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
             .createdAt(member.getCreatedAt())
@@ -189,7 +191,7 @@ public class MemberService {
             .id(otherMemberId)
             .email(otherMember.getEmail())
             .name(otherMember.getName())
-            .profileImgUrl(otherMember.getProfileImgUrl())
+            .profileImgUrl(defaultUrl + otherMember.getProfileImgKeyName())
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
             .createdAt(otherMember.getCreatedAt())
@@ -243,11 +245,11 @@ public class MemberService {
     @Transactional
     public void updateProfileImg(HttpServletRequest request, MultipartFile multipartFile) throws IOException {
         Member member = tokenProvider.getMemberFromToken(request);
-        String imgUrl = s3UploadService.upload(multipartFile, "profile");
+        String keyName = s3UploadService.upload(multipartFile, "profile");
 
         member = memberRepository.findById(member.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
-        member.updateProfileImgUrl(imgUrl);
+        member.updateProfileImgKeyName(keyName);
         memberRepository.save(member);
     }
 
