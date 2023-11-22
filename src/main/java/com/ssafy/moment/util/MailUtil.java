@@ -28,8 +28,11 @@ public class MailUtil {
             msg.addRecipients(Message.RecipientType.TO, to);
             msg.setSubject("[Trip, the Moment] 본인인증");
             msg.setText(mailText, "utf-8", "html");
+            msg.setFrom(new InternetAddress("sngjae972@gmail.com","[Trip, the Moment]","UTF-8"));
         } catch (MessagingException e) {
             throw new CustomException(ErrorCode.EMAIL_ERROR);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
 
         javaMailSender.send(msg);
