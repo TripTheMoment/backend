@@ -91,7 +91,8 @@ public class MemberService {
     public void resetPassword(HttpServletRequest request) {
         Member member = tokenProvider.getMemberFromToken(request);
         String newPw = getTempPassword();
-        member.updatePassword(newPw);
+        String encodedPw = new BCryptPasswordEncoder().encode(newPw);
+        member.updatePassword(encodedPw);
         memberRepository.save(member);
 
         mailSend(member.getEmail(), newPw);

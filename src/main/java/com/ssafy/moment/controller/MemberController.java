@@ -44,7 +44,7 @@ public class MemberController {
     }
 
     @PatchMapping("/password/reset")
-    public ResponseDto<?> resetPassword(@RequestBody PasswordResetReq req, HttpServletRequest request) {
+    public ResponseDto<?> resetPassword(HttpServletRequest request) {
         memberService.resetPassword(request);
         return ResponseDto.success("RESET PASSWORD SUCCESS");
     }
