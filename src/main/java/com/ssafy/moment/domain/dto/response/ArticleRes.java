@@ -2,6 +2,8 @@ package com.ssafy.moment.domain.dto.response;
 
 import com.ssafy.moment.domain.entity.Article;
 import com.ssafy.moment.domain.entity.Member;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,7 @@ public class ArticleRes {
     private String imgUrl;
     private MemberOverviewRes member;
     private List<ReplyRes> replies;
+    private LocalDateTime createdAt;
 
     public static ArticleRes of(Article article, Member member) {
         return ArticleRes.builder()
@@ -34,6 +37,7 @@ public class ArticleRes {
             .replies(article.getReplies().stream()
                 .map(e -> ReplyRes.of(e, e.getMember()))
                 .collect(Collectors.toList()))
+            .createdAt(article.getCreatedAt())
             .build();
     }
 

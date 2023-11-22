@@ -3,36 +3,44 @@ package com.ssafy.moment.service;
 import com.ssafy.moment.domain.dto.request.MemberInfoUpdateForm;
 import com.ssafy.moment.domain.dto.request.PasswordResetReq;
 import com.ssafy.moment.domain.dto.request.SignupReq;
-import com.ssafy.moment.domain.dto.response.BookmarkRes;
-import com.ssafy.moment.domain.dto.response.FollowerRes;
-import com.ssafy.moment.domain.dto.response.FollowingRes;
-import com.ssafy.moment.domain.dto.response.MemberRes;
+import com.ssafy.moment.domain.dto.response.*;
 import com.ssafy.moment.domain.entity.Bookmark;
 import com.ssafy.moment.domain.entity.Follow;
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
+import com.ssafy.moment.repository.ArticleRepository;
 import com.ssafy.moment.repository.AttractionBookmarkRepository;
 import com.ssafy.moment.repository.FollowRepository;
 import com.ssafy.moment.repository.MemberRepository;
 import com.ssafy.moment.security.TokenProvider;
 import com.ssafy.moment.util.MailUtil;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
+    private final S3UploadService s3UploadService;
+
     private final AttractionBookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
+    private final ArticleRepository articleRepository;
 
     private final TokenProvider tokenProvider;
     private final MailUtil mailUtil;
@@ -111,19 +119,30 @@ public class MemberService {
 
         int followingCnt = Long.valueOf(followRepository.countByFromMember(member)).intValue();
         int followerCnt = Long.valueOf(followRepository.countByToMember(member)).intValue();
-        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
-
-        //TODO: MemberRes에 List<Article> 주입
 
         return  MemberRes.builder()
+            .id(member.getId())
             .email(member.getEmail())
             .name(member.getName())
-            .articles(null)
+            .profileImgUrl(member.getProfileImgUrl())
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
-            .bookmarks(bookmarks.stream().map(e -> BookmarkRes.from(e)).collect(Collectors.toList()))
             .createdAt(member.getCreatedAt())
             .build();
+    }
+
+    public Page<BookmarkRes> getBookmarksByMember(int memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+        return bookmarkRepository.findByMemberOrderByCreatedAtDesc(member, pageable)
+                .map(e -> BookmarkRes.from(e));
+    }
+
+    public Page<MemberArticleRes> getArticlesByMember(int memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+        return articleRepository.findByMemberOrderByCreatedAtDesc(member, pageable)
+                .map(e -> MemberArticleRes.from(e));
     }
 
     private Member getMember(int memberId) {
@@ -139,14 +158,6 @@ public class MemberService {
 
         memberRepository.save(member);
     }
-
-//    public List<BookmarkRes> getBookmarks(HttpServletRequest request) {
-//        Member member = tokenProvider.getMemberFromToken(request);
-//        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
-//        return bookmarks.stream()
-//            .map(e -> BookmarkRes.from(e))
-//            .collect(Collectors.toList());
-//    }
 
     @Transactional
     public void deleteBookmark(HttpServletRequest request, int bookmarkId) {
@@ -173,18 +184,14 @@ public class MemberService {
 
         int followingCnt = Long.valueOf(followRepository.countByFromMember(otherMember)).intValue();
         int followerCnt = Long.valueOf(followRepository.countByToMember(otherMember)).intValue();
-        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
-
-        //TODO: MemberRes에 List<Article> 주입
 
         MemberRes memberRes = MemberRes.builder()
             .id(otherMemberId)
             .email(otherMember.getEmail())
             .name(otherMember.getName())
-            .articles(null)
+            .profileImgUrl(otherMember.getProfileImgUrl())
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
-            .bookmarks(bookmarks.stream().map(e -> BookmarkRes.from(e)).collect(Collectors.toList()))
             .createdAt(otherMember.getCreatedAt())
             .build();
 
@@ -231,6 +238,17 @@ public class MemberService {
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_FOLLOW));
 
         followRepository.delete(follow);
+    }
+
+    @Transactional
+    public void updateProfileImg(HttpServletRequest request, MultipartFile multipartFile) throws IOException {
+        Member member = tokenProvider.getMemberFromToken(request);
+        String imgUrl = s3UploadService.upload(multipartFile, "profile");
+
+        member = memberRepository.findById(member.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+        member.updateProfileImgUrl(imgUrl);
+        memberRepository.save(member);
     }
 
 }

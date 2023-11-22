@@ -27,6 +27,7 @@ public enum ErrorCode {
     NOT_EXPIRED_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "아직 만료되지 않은 액세스 토큰입니다."),
     NOT_FOUND_AUTHENTICATION(HttpStatus.BAD_REQUEST, "인증 정보가 없습니다."),
     NO_AUTHORITY(HttpStatus.BAD_REQUEST, "해당 요청에 대한 권한이 없습니다."),
+    NOT_EXIST_MEMBER_IN_TOKEN(HttpStatus.BAD_REQUEST, "토큰에서 멤버 정보를 찾을 수 없습니다."),
 
     // 관광지 정보 조회
     NOT_FOUND_INFO(HttpStatus.BAD_REQUEST, "아이디에 해당하는 관광지 정보가 없습니다."),

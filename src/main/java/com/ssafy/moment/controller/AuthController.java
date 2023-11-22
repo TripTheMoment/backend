@@ -6,6 +6,7 @@ import com.ssafy.moment.service.AuthService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.parser.ParseException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +43,12 @@ public class AuthController {
         boolean result = authService.emailAuth(id);
         model.addAttribute("result", result);
         return "member/email-auth";
+    }
+
+    @GetMapping("/renew")
+    public ResponseDto<String> renewAccessToken(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        authService.renewAccessToken(request, response);
+        return ResponseDto.success("RENEW SUCCESS");
     }
 
 }
