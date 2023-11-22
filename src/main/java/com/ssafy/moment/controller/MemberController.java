@@ -8,6 +8,7 @@ import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.exception.ErrorCode;
 import com.ssafy.moment.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,10 +60,15 @@ public class MemberController {
         return ResponseDto.success("MEMBER UPDATE SUCCESS");
     }
 
-//    @GetMapping("/bookmarks")
-//    public ResponseDto<?> getBookmarks(HttpServletRequest request) {
-//        return ResponseDto.success(memberService.getBookmarks(request));
-//    }
+    @GetMapping("/{memberId}/bookmarks")
+    public ResponseDto<?> getArticles(@PathVariable int memberId, Pageable pageable) {
+        return ResponseDto.success(memberService.getArticlesByMember(memberId, pageable));
+    }
+
+    @GetMapping("/{memberId}/articles")
+    public ResponseDto<?> getBookmarks(@PathVariable int memberId, Pageable pageable) {
+        return ResponseDto.success(memberService.getBookmarksByMember(memberId, pageable));
+    }
 
     @DeleteMapping("/bookmarks/{id}")
     public ResponseDto<?> deleteBookmark(HttpServletRequest request, @PathVariable int id) {

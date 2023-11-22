@@ -22,9 +22,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -115,37 +119,35 @@ public class MemberService {
 
         int followingCnt = Long.valueOf(followRepository.countByFromMember(member)).intValue();
         int followerCnt = Long.valueOf(followRepository.countByToMember(member)).intValue();
-        List<BookmarkRes> bookmarks = getBookmarksByMember(member);
-        List<MemberArticleRes> articles = getArticlesByMember(member);
 
         return  MemberRes.builder()
             .id(member.getId())
             .email(member.getEmail())
             .name(member.getName())
             .profileImgUrl(member.getProfileImgUrl())
-            .articles(articles)
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
-            .bookmarks(bookmarks)
             .createdAt(member.getCreatedAt())
             .build();
+    }
+
+    public Page<BookmarkRes> getBookmarksByMember(int memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+        return bookmarkRepository.findByMemberOrderByCreatedAtDesc(member, pageable)
+                .map(e -> BookmarkRes.from(e));
+    }
+
+    public Page<MemberArticleRes> getArticlesByMember(int memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+        return articleRepository.findByMemberOrderByCreatedAtDesc(member, pageable)
+                .map(e -> MemberArticleRes.from(e));
     }
 
     private Member getMember(int memberId) {
         return memberRepository.findById(memberId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
-    }
-
-    private List<BookmarkRes> getBookmarksByMember(Member member) {
-        return bookmarkRepository.findByMember(member)
-                .stream().map(e -> BookmarkRes.from(e))
-                .collect(Collectors.toList());
-    }
-
-    private List<MemberArticleRes> getArticlesByMember(Member member) {
-        return articleRepository.findByMember(member)
-                .stream().map(e -> MemberArticleRes.from(e))
-                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -182,18 +184,14 @@ public class MemberService {
 
         int followingCnt = Long.valueOf(followRepository.countByFromMember(otherMember)).intValue();
         int followerCnt = Long.valueOf(followRepository.countByToMember(otherMember)).intValue();
-        List<BookmarkRes> bookmarks = getBookmarksByMember(member);
-        List<MemberArticleRes> articles = getArticlesByMember(member);
 
         MemberRes memberRes = MemberRes.builder()
             .id(otherMemberId)
             .email(otherMember.getEmail())
             .name(otherMember.getName())
             .profileImgUrl(otherMember.getProfileImgUrl())
-            .articles(articles)
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
-            .bookmarks(bookmarks)
             .createdAt(otherMember.getCreatedAt())
             .build();
 

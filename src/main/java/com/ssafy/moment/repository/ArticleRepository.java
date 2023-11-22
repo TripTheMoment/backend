@@ -13,6 +13,6 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
 
     Page<Article> findByTitleContainingOrderByCreatedAtDesc(String title, Pageable pageable);
-    List<Article> findByMember(Member member);
+    Page<Article> findByMemberOrderByCreatedAtDesc(Member member, Pageable pageable);
 
 }
