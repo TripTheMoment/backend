@@ -37,15 +37,15 @@ public class AuthService {
             return ResponseDto.fail(ErrorCode.NOT_FOUND_MEMBER.getDetail());
         }
 
-        // 비밀번호 확인
         if (!PasswordUtil.checkPassword(req.getPassword(), member.getPassword())) {
             return ResponseDto.fail(ErrorCode.WRONG_PASSWORD.getDetail());
         }
 
-        // 토큰 생성
-        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
+        if (!member.isEmailAuthYn()) {
+            return ResponseDto.fail(ErrorCode.NOT_ACTIVATED_MEMBER.getDetail());
+        }
 
-        // 응답 헤더에 토큰 담기
+        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         tokenToHeaders(tokenDto, res);
 
         return ResponseDto.success("LOGIN SUCCESS");
@@ -123,7 +123,7 @@ public class AuthService {
 
         tokenToHeaders(tokenDto, response);
 
-        return ResponseDto.success("재발급 완료");
+        return ResponseDto.success("RENEW SUCCESS");
     }
 
 }

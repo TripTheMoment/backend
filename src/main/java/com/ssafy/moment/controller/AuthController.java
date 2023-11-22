@@ -42,7 +42,7 @@ public class AuthController {
     public String emailAuth(Model model, @RequestParam String id) {
         boolean result = authService.emailAuth(id);
         model.addAttribute("result", result);
-        return "member/email-auth";
+        return "ACTIVATION SUCCESS";
     }
 
     @GetMapping("/renew")

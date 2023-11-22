@@ -28,6 +28,7 @@ public enum ErrorCode {
     NOT_FOUND_AUTHENTICATION(HttpStatus.BAD_REQUEST, "인증 정보가 없습니다."),
     NO_AUTHORITY(HttpStatus.BAD_REQUEST, "해당 요청에 대한 권한이 없습니다."),
     NOT_EXIST_MEMBER_IN_TOKEN(HttpStatus.BAD_REQUEST, "토큰에서 멤버 정보를 찾을 수 없습니다."),
+    NOT_ACTIVATED_MEMBER(HttpStatus.BAD_REQUEST, "활성화되지 않은 회원입니다."),
 
     // 관광지 정보 조회
     NOT_FOUND_INFO(HttpStatus.BAD_REQUEST, "아이디에 해당하는 관광지 정보가 없습니다."),
