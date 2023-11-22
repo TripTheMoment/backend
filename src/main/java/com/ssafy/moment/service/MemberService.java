@@ -17,6 +17,8 @@ import com.ssafy.moment.repository.FollowRepository;
 import com.ssafy.moment.repository.MemberRepository;
 import com.ssafy.moment.security.TokenProvider;
 import com.ssafy.moment.util.MailUtil;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,10 +27,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
+    private final S3UploadService s3UploadService;
 
     private final AttractionBookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
@@ -116,8 +121,10 @@ public class MemberService {
         //TODO: MemberRes에 List<Article> 주입
 
         return  MemberRes.builder()
+            .id(member.getId())
             .email(member.getEmail())
             .name(member.getName())
+            .profileImgUrl(member.getProfileImgUrl())
             .articles(null)
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
@@ -181,6 +188,7 @@ public class MemberService {
             .id(otherMemberId)
             .email(otherMember.getEmail())
             .name(otherMember.getName())
+            .profileImgUrl(otherMember.getProfileImgUrl())
             .articles(null)
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
@@ -231,6 +239,17 @@ public class MemberService {
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_FOLLOW));
 
         followRepository.delete(follow);
+    }
+
+    @Transactional
+    public void updateProfileImg(HttpServletRequest request, MultipartFile multipartFile) throws IOException {
+        Member member = tokenProvider.getMemberFromToken(request);
+        String imgUrl = s3UploadService.upload(multipartFile, "profile");
+
+        member = memberRepository.findById(member.getId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+        member.updateProfileImgUrl(imgUrl);
+        memberRepository.save(member);
     }
 
 }
