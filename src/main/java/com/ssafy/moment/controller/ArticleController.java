@@ -23,7 +23,6 @@ public class ArticleController {
 
     @GetMapping
     public ResponseDto<?> getList(@RequestParam String title, Pageable pageable) {
-        // TODO: 페이지 처리
         return ResponseDto.success(articleService.getList(title, pageable));
     }
 
