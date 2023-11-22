@@ -4,22 +4,30 @@ import com.ssafy.moment.domain.dto.TokenDto;
 import com.ssafy.moment.domain.dto.request.LoginReq;
 import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.domain.entity.Member;
+import com.ssafy.moment.domain.entity.RefreshToken;
+import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
 import com.ssafy.moment.repository.MemberRepository;
+import com.ssafy.moment.repository.RefreshTokenRepository;
 import com.ssafy.moment.security.TokenProvider;
 import com.ssafy.moment.util.PasswordUtil;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+
     private final TokenProvider tokenProvider;
 
     @Transactional
@@ -85,6 +93,37 @@ public class AuthService {
         memberRepository.save(member);
 
         return true;
+    }
+
+    @Transactional
+    public ResponseDto<String> renewAccessToken(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        if (!tokenProvider.validateToken(request.getHeader("RefreshToken"))) {
+            throw new CustomException(ErrorCode.INVALIDATE_REFRESH_TOKEN);
+        }
+
+        String memberId = tokenProvider.getMemberIdFromRefreshToken(request);
+        if (null == memberId) {
+            throw new CustomException(ErrorCode.NOT_EXIST_MEMBER_IN_TOKEN);
+        }
+
+        Member member = memberRepository.findById(Integer.parseInt(memberId))
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+
+        RefreshToken refreshToken = tokenProvider.isPresentRefreshToken(member);
+
+        if (!refreshToken.getKeyValue().equals(request.getHeader("RefreshToken"))) {
+            log.info("refreshToken.getKeyValue() : " + refreshToken.getKeyValue());
+            log.info("request.getHeader : " + request.getHeader("RefreshToken"));
+            throw new CustomException(ErrorCode.MISMATCH_REFRESH_TOKEN);
+        }
+
+        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
+        refreshToken.updateValue(tokenDto.getRefreshToken());
+        refreshTokenRepository.save(refreshToken);
+
+        tokenToHeaders(tokenDto, response);
+
+        return ResponseDto.success("재발급 완료");
     }
 
 }

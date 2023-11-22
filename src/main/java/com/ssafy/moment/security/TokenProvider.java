@@ -45,8 +45,8 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;  // 30분
-    private static final long REFRESH_TOKEN_EXPRIRE_TIME = 1000 * 60 * 60 * 24 * 7;  //7일
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 1;  // 1 분
+    private static final long REFRESH_TOKEN_EXPRIRE_TIME = 1000 * 60 * 60 * 24 * 1;  // 1 일
 
     private final Key key;
 
@@ -73,9 +73,10 @@ public class TokenProvider {
             .compact();
 
         // RefreshToken 생성
-        // AccessToken의 재발급 목적으로 만들어진 토큰이므로 만료기한 외 별다른 정보를 담지 않는다
+        // AccessToken의 재발급 목적으로 만들어진 토큰이므로 만료기한, 멤버ID 외 별다른 정보를 담지 않는다
         String refreshToken = Jwts.builder()
             .setExpiration(new Date(now + REFRESH_TOKEN_EXPRIRE_TIME))
+            .setSubject(member.getId().toString())
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
 
@@ -136,27 +137,27 @@ public class TokenProvider {
         return blacklistTokenRepository.existsById(accessToken);
     }
 
-    public Long getMemberIdByToken(String accessToken) {
-        String token;
-        if (StringUtils.hasText(accessToken) && accessToken.startsWith("Bearer ")) {
-            token = accessToken.substring(7);
-        } else {
-            return null;
-        }
-        Claims claims;
-        try {
-            claims = Jwts
-                .parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        } catch (ExpiredJwtException e) {
-            return null;
-        }
-
-        return Long.parseLong(claims.getSubject());
-    }
+//    public Long getMemberIdByToken(String accessToken) {
+//        String token;
+//        if (StringUtils.hasText(accessToken) && accessToken.startsWith("Bearer ")) {
+//            token = accessToken.substring(7);
+//        } else {
+//            return null;
+//        }
+//        Claims claims;
+//        try {
+//            claims = Jwts
+//                .parserBuilder()
+//                .setSigningKey(key)
+//                .build()
+//                .parseClaimsJws(token)
+//                .getBody();
+//        } catch (ExpiredJwtException e) {
+//            return null;
+//        }
+//
+//        return Long.parseLong(claims.getSubject());
+//    }
 
     private String getAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
@@ -168,8 +169,8 @@ public class TokenProvider {
         return null;
     }
 
-    public String getMemberFromExpiredAccessToken(HttpServletRequest request) throws ParseException {
-        String jwt = getAccessToken(request);
+    public String getMemberIdFromRefreshToken(HttpServletRequest request) throws ParseException {
+        String jwt = request.getHeader("RefreshToken");
 
         Base64.Decoder decoder = Base64.getUrlDecoder();
         assert jwt != null;
@@ -181,12 +182,10 @@ public class TokenProvider {
 
     @Transactional
     public Member getMemberFromToken(HttpServletRequest request) {
-        // RefreshToken 및 Authorization 유효성 검사
-        if (null == request.getHeader("RefreshToken") || null == request.getHeader("Authorization")) {
+        if (null == request.getHeader("Authorization")) {
             throw new CustomException(ErrorCode.BLANK_TOKEN_HEADER);
         }
 
-        // token 유효성 검사
         Member member = validateMember(request);
         if (null == member) {
             throw new CustomException(ErrorCode.EXPIRED_TOKEN);
@@ -197,21 +196,11 @@ public class TokenProvider {
 
     @Transactional
     public Member validateMember(HttpServletRequest request) {
-        String refreshTokenOfHeader = request.getHeader("RefreshToken");
-        if (!validateToken(refreshTokenOfHeader)) {
-            throw new CustomException(ErrorCode.INVALIDATE_REFRESH_TOKEN);
-        }
-
         if (checkBlacklistToken(getAccessToken(request))) {
             throw new CustomException(ErrorCode.BLACKLIST_ACCESS_TOKEN);
         }
 
         Member member = getMemberFromAuthentication();
-        RefreshToken refreshToken = isPresentRefreshToken(member);
-
-        if (!refreshToken.getKeyValue().equals(refreshTokenOfHeader)) {
-            throw new CustomException(ErrorCode.MISMATCH_REFRESH_TOKEN);
-        }
 
         return member;
     }
