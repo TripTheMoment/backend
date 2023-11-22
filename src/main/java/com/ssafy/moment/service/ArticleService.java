@@ -97,7 +97,7 @@ public class ArticleService {
         Article article = articleRepository.findById(articleId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
 
-        s3UploadService.delete(member.getProfileImgKeyName());
+        s3UploadService.delete(article.getImgKeyName());
 
         if (member.getId() != article.getMember().getId()) {
             throw new CustomException(ErrorCode.NO_AUTHORITY);
