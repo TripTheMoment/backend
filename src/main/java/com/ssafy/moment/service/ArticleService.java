@@ -23,7 +23,7 @@ public class ArticleService {
     private final TokenProvider tokenProvider;
 
     public Page<ArticleRes> getList(String title, Pageable pageable) {
-        Page<Article> articles = articleRepository.findByTitleContaining(title, pageable);
+        Page<Article> articles = articleRepository.findByTitleContainingOrderByCreatedAtDesc(title, pageable);
         return articles.map(e -> ArticleRes.of(e, e.getMember()));
     }
 

@@ -3,15 +3,13 @@ package com.ssafy.moment.service;
 import com.ssafy.moment.domain.dto.request.MemberInfoUpdateForm;
 import com.ssafy.moment.domain.dto.request.PasswordResetReq;
 import com.ssafy.moment.domain.dto.request.SignupReq;
-import com.ssafy.moment.domain.dto.response.BookmarkRes;
-import com.ssafy.moment.domain.dto.response.FollowerRes;
-import com.ssafy.moment.domain.dto.response.FollowingRes;
-import com.ssafy.moment.domain.dto.response.MemberRes;
+import com.ssafy.moment.domain.dto.response.*;
 import com.ssafy.moment.domain.entity.Bookmark;
 import com.ssafy.moment.domain.entity.Follow;
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
+import com.ssafy.moment.repository.ArticleRepository;
 import com.ssafy.moment.repository.AttractionBookmarkRepository;
 import com.ssafy.moment.repository.FollowRepository;
 import com.ssafy.moment.repository.MemberRepository;
@@ -38,6 +36,7 @@ public class MemberService {
     private final AttractionBookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
+    private final ArticleRepository articleRepository;
 
     private final TokenProvider tokenProvider;
     private final MailUtil mailUtil;
@@ -116,19 +115,18 @@ public class MemberService {
 
         int followingCnt = Long.valueOf(followRepository.countByFromMember(member)).intValue();
         int followerCnt = Long.valueOf(followRepository.countByToMember(member)).intValue();
-        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
-
-        //TODO: MemberRes에 List<Article> 주입
+        List<BookmarkRes> bookmarks = getBookmarksByMember(member);
+        List<MemberArticleRes> articles = getArticlesByMember(member);
 
         return  MemberRes.builder()
             .id(member.getId())
             .email(member.getEmail())
             .name(member.getName())
             .profileImgUrl(member.getProfileImgUrl())
-            .articles(null)
+            .articles(articles)
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
-            .bookmarks(bookmarks.stream().map(e -> BookmarkRes.from(e)).collect(Collectors.toList()))
+            .bookmarks(bookmarks)
             .createdAt(member.getCreatedAt())
             .build();
     }
@@ -136,6 +134,18 @@ public class MemberService {
     private Member getMember(int memberId) {
         return memberRepository.findById(memberId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
+    }
+
+    private List<BookmarkRes> getBookmarksByMember(Member member) {
+        return bookmarkRepository.findByMember(member)
+                .stream().map(e -> BookmarkRes.from(e))
+                .collect(Collectors.toList());
+    }
+
+    private List<MemberArticleRes> getArticlesByMember(Member member) {
+        return articleRepository.findByMember(member)
+                .stream().map(e -> MemberArticleRes.from(e))
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -146,14 +156,6 @@ public class MemberService {
 
         memberRepository.save(member);
     }
-
-//    public List<BookmarkRes> getBookmarks(HttpServletRequest request) {
-//        Member member = tokenProvider.getMemberFromToken(request);
-//        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
-//        return bookmarks.stream()
-//            .map(e -> BookmarkRes.from(e))
-//            .collect(Collectors.toList());
-//    }
 
     @Transactional
     public void deleteBookmark(HttpServletRequest request, int bookmarkId) {
@@ -180,19 +182,18 @@ public class MemberService {
 
         int followingCnt = Long.valueOf(followRepository.countByFromMember(otherMember)).intValue();
         int followerCnt = Long.valueOf(followRepository.countByToMember(otherMember)).intValue();
-        List<Bookmark> bookmarks = bookmarkRepository.findByMember(member);
-
-        //TODO: MemberRes에 List<Article> 주입
+        List<BookmarkRes> bookmarks = getBookmarksByMember(member);
+        List<MemberArticleRes> articles = getArticlesByMember(member);
 
         MemberRes memberRes = MemberRes.builder()
             .id(otherMemberId)
             .email(otherMember.getEmail())
             .name(otherMember.getName())
             .profileImgUrl(otherMember.getProfileImgUrl())
-            .articles(null)
+            .articles(articles)
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
-            .bookmarks(bookmarks.stream().map(e -> BookmarkRes.from(e)).collect(Collectors.toList()))
+            .bookmarks(bookmarks)
             .createdAt(otherMember.getCreatedAt())
             .build();
 

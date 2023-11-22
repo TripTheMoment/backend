@@ -20,7 +20,7 @@ public class MemberRes {
     private String name;
     private String profileImgUrl;
     private boolean followYn;
-    private List<ArticleRes> articles;
+    private List<MemberArticleRes> articles;
     private int followingCnt;
     private int followerCnt;
     private List<BookmarkRes> bookmarks;
