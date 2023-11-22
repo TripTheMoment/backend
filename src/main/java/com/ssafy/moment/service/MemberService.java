@@ -112,7 +112,6 @@ public class MemberService {
 
     private void mailSend(String email, String password) {
         mailUtil.sendPwMail(email, password);
-        System.out.println("전송 완료!");
     }
 
     public MemberRes getDetail(HttpServletRequest request) {

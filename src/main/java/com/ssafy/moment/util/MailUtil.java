@@ -39,7 +39,7 @@ public class MailUtil {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(email);
         msg.setSubject("[Trip, the Moment] 비밀번호 초기화 안내");
-        msg.setText("<p>안녕하세요 Trip, the Moment에서 보내드리는 비밀번호 안내 메일입니다.</p><p>초기화된 비밀번호는 " + password + "</p>");
+        msg.setText("<p>안녕하세요 Trip, the Moment에서 보내드리는 비밀번호 안내 메일입니다.</p><p>초기화된 비밀번호는 아래와 같습니다. 하기 비밀번호로 로그인 후 비밀번호를 변경하세요!</p>" + "<p>" + password + "</p>");
         msg.setFrom("sngjae972@gmail.com");
         msg.setReplyTo("sngjae972@gmail.com");
         System.out.println("[보낸 메일 msg] : "+msg);
