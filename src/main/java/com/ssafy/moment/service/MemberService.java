@@ -83,7 +83,7 @@ public class MemberService {
     @Transactional
     public void updatePassword(PasswordResetReq req, HttpServletRequest request) {
         Member member = tokenProvider.getMemberFromToken(request);
-        member.updatePassword(req.getPassword());
+        member.updatePassword(new BCryptPasswordEncoder().encode(req.getPassword()));
         memberRepository.save(member);
     }
 
