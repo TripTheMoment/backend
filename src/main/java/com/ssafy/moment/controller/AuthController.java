@@ -7,15 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
@@ -23,6 +19,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
+    @ResponseBody
     public ResponseDto<?> login(@RequestBody LoginReq req, HttpServletResponse res) {
         try {
             return authService.login(req, res);
@@ -32,6 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
+    @ResponseBody
     public ResponseDto<?> logout(HttpServletRequest request) {
         try {
             authService.logout(request);
@@ -54,10 +52,11 @@ public class AuthController {
     public String emailAuth(Model model, @RequestParam String id) {
         boolean result = authService.emailAuth(id);
         model.addAttribute("result", result);
-        return "ACTIVATION SUCCESS";
+        return "/member/email-auth";
     }
 
     @GetMapping("/renew")
+    @ResponseBody
     public ResponseDto<?> renewAccessToken(HttpServletRequest request, HttpServletResponse response) throws ParseException {
         try {
             authService.renewAccessToken(request, response);

@@ -3,15 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>회원 가입 인증</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap");
+    h1 {
+      font-family: "Noto Sans KR", "NanumSquare", sans-serif !important;
+    }
+
+    img {
+      width: 300px;
+      object-fit: cover
+    }
+
+  </style>
 </head>
 <body>
-<h1>회원 활성화</h1>
+<div>
+  <img src = "/img/logo.png">
+</div>
 <div th:if="${result eq true}">
-  <p>회원님의 계정이 활성화되었습니다.</p>
+  <h3><i>회원님의 계정이 활성화되었습니다.</i></h3>
+  <p>마이페이지에서 회원님만의 비밀번호를 설정해주세요!</p>
+  <p><a href="http://localhost:3000/auth/login">클릭하여 로그인하러 가기</a></p>
 </div>
 
 <div th:if="${result eq false}">
-  <p>회원님의 계정이 활성화에 실패하였습니다.</p>
+  <p><i>회원님의 계정이 활성화에 실패하였습니다.</i></p>
 </div>
 </body>
 </html>
