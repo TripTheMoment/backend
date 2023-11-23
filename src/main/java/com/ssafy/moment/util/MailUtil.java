@@ -21,7 +21,7 @@ public class MailUtil {
     public void sendAuthMail(String to, String uuid) {
         MimeMessage msg = javaMailSender.createMimeMessage();
         String mailText = "<h3>Trip, the Moment 가입을 축하드립니다!</h3><p>아래 링크를 클릭하셔서 가입을 완료하세요.</p>"
-            + "<div><a href='http://localhost/auth/email-auth?id=" + uuid + "'>요기 눌러줘잉</a></div>";
+            + "<div><a href='http://localhost/auth/email-auth?id=" + uuid + "'>요기 눌러줘잉\uD83D\uDE1C</a></div>";
 
         System.out.println("mailText: " + mailText);
         try {
