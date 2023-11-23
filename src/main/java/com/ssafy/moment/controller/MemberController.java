@@ -95,7 +95,7 @@ public class MemberController {
         return ResponseDto.success(memberService.getFollowers(request));
     }
 
-    @PostMapping("/follows/{targetMemberId}")
+    @GetMapping("/follows/{targetMemberId}")
     public ResponseDto<?> createFollow(HttpServletRequest request, @PathVariable int targetMemberId) {
         memberService.createFollow(request, targetMemberId);
         return ResponseDto.success("CREATE FOLLOW SUCCESS");
