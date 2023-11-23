@@ -17,7 +17,6 @@ import com.ssafy.moment.repository.MemberRepository;
 import com.ssafy.moment.security.TokenProvider;
 import com.ssafy.moment.util.MailUtil;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,7 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -80,13 +78,6 @@ public class MemberService {
         memberRepository.save(member);
 
         System.out.println("[Member] : " + member.getEmail() +", "+ member.getName());
-    }
-
-    @Transactional
-    public void updatePassword(PasswordResetReq req, HttpServletRequest request) {
-        Member member = tokenProvider.getMemberFromToken(request);
-        member.updatePassword(new BCryptPasswordEncoder().encode(req.getPassword()));
-        memberRepository.save(member);
     }
 
     @Transactional
@@ -166,7 +157,8 @@ public class MemberService {
     public void update(HttpServletRequest request, MemberInfoUpdateForm form) {
         Member member = tokenProvider.getMemberFromToken(request);
         member = getMember(member.getId());
-        member.updateName(form.getName());
+        String encodedPassword = new BCryptPasswordEncoder().encode(form.getPassword());
+        member.update(form.getName(), encodedPassword);
 
         memberRepository.save(member);
     }

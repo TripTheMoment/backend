@@ -37,12 +37,6 @@ public class MemberController {
         return ResponseDto.success("INACTIVATION SUCCESS");
     }
 
-    @PatchMapping("/password")
-    public ResponseDto<String> updatePassword(@RequestBody PasswordResetReq req, HttpServletRequest request) {
-        memberService.updatePassword(req, request);
-        return ResponseDto.success("UPDATE PASSWORD SUCCESS");
-    }
-
     @PatchMapping("/password/reset")
     public ResponseDto<?> resetPassword(HttpServletRequest request) {
         memberService.resetPassword(request);

@@ -6,5 +6,6 @@ import lombok.Getter;
 public class MemberInfoUpdateForm {
 
     private String name;
+    private String password;
 
 }

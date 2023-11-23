@@ -58,8 +58,9 @@ public class Member extends BaseEntity {
         System.out.println("활성화 메서드 실행");
         this.emailAuthYn = true;
     }
-    public void updateName(String name) {
+    public void update(String name, String encodedPw) {
         this.name = name;
+        this.password = encodedPw;
     }
     public void updateProfileImgKeyName(String profileImgKeyName) {
         this.profileImgKeyName = profileImgKeyName;
