@@ -1,6 +1,7 @@
 package com.ssafy.moment.service;
 
 import com.ssafy.moment.domain.dto.request.MemberInfoUpdateForm;
+import com.ssafy.moment.domain.dto.request.PasswordCheckForm;
 import com.ssafy.moment.domain.dto.request.PasswordResetReq;
 import com.ssafy.moment.domain.dto.request.SignupReq;
 import com.ssafy.moment.domain.dto.response.*;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ssafy.moment.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -28,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -113,6 +117,14 @@ public class MemberService {
 
     private void mailSend(String email, String password) {
         mailUtil.sendPwMail(email, password);
+    }
+
+    public void checkPassword(HttpServletRequest request, PasswordCheckForm form) {
+        Member member = tokenProvider.getMemberFromToken(request);
+
+        if (!PasswordUtil.checkPassword(form.getPassword(), member.getPassword())) {
+            throw new CustomException(ErrorCode.WRONG_PASSWORD);
+        }
     }
 
     public MemberRes getDetail(HttpServletRequest request) {

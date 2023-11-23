@@ -1,6 +1,7 @@
 package com.ssafy.moment.controller;
 
 import com.ssafy.moment.domain.dto.request.MemberInfoUpdateForm;
+import com.ssafy.moment.domain.dto.request.PasswordCheckForm;
 import com.ssafy.moment.domain.dto.request.PasswordResetReq;
 import com.ssafy.moment.domain.dto.request.SignupReq;
 import com.ssafy.moment.domain.dto.response.MemberRes;
@@ -47,6 +48,16 @@ public class MemberController {
     public ResponseDto<?> resetPassword(HttpServletRequest request) {
         memberService.resetPassword(request);
         return ResponseDto.success("RESET PASSWORD SUCCESS");
+    }
+
+    @GetMapping("/password")
+    public ResponseDto<?> checkPassword(HttpServletRequest request, @RequestBody PasswordCheckForm form) {
+        try {
+            memberService.checkPassword(request, form);
+            return ResponseDto.success("CORRECT PASSWORD");
+        } catch (Exception e) {
+            return ResponseDto.fail(e.getMessage());
+        }
     }
 
     @GetMapping("/detail")
