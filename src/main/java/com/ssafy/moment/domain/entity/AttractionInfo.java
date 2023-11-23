@@ -31,7 +31,6 @@ public class AttractionInfo {
     private Integer gugunCode;
     private Double latitude;
     private Double longitude;
-    private int hit;
     private String mlevel;
 
 //    @OneToMany(mappedBy = "attractionInfo")

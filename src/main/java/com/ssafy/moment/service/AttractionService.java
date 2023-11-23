@@ -12,6 +12,8 @@ import com.ssafy.moment.repository.AttractionBookmarkRepository;
 import com.ssafy.moment.repository.AttractionDescriptionRepository;
 import com.ssafy.moment.repository.AttractionInfoRepository;
 import com.ssafy.moment.repository.AttractionReviewRepository;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +54,10 @@ public class AttractionService {
 
         AttractionDetailRes res = AttractionDetailRes.from(info);
         res.setDescription(descriptionRepository.findById(id).get().getOverview());
-        res.setReviewResList(reviews.stream().map(r -> ReviewRes.from(r)).collect(Collectors.toList()));
+        res.setReviewResList(reviews.stream()
+                .map(r -> ReviewRes.from(r))
+                .sorted(Comparator.comparing(ReviewRes::getCreatedAt).reversed())
+                .collect(Collectors.toList()));
         res.setBookmarkCnt(bookmarkCnt);
 
         return res;

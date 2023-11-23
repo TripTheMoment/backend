@@ -26,7 +26,6 @@ public class AttractionDetailRes {
     private String firstImage2;
     private double latitude;
     private double longitude;
-    private int hit;
     private int bookmarkCnt;
     private List<ReviewRes> reviewResList;
 
@@ -42,7 +41,6 @@ public class AttractionDetailRes {
             .firstImage2(info.getFirstImage2())
             .latitude(info.getLatitude())
             .longitude(info.getLongitude())
-            .hit(info.getHit())
 //            .bookmarkCnt(info.getBookmarks().size())
             .build();
     }

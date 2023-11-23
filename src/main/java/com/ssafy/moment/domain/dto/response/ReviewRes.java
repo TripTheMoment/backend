@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -19,6 +21,7 @@ public class ReviewRes {
     private String content;
     private MemberOverviewRes member;
     private int contentId;
+    private LocalDateTime createdAt;
 
     public static ReviewRes from(Review review) {
         return ReviewRes.builder()
@@ -27,6 +30,7 @@ public class ReviewRes {
             .content(review.getContent())
             .member(MemberOverviewRes.from(review.getMember()))
             .contentId(review.getAttractionInfo().getId())
+            .createdAt(review.getCreatedAt())
             .build();
     }
 

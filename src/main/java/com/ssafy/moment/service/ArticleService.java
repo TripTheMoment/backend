@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,6 +64,7 @@ public class ArticleService {
                 .member(MemberOverviewRes.from(article.getMember()))
                 .replies(article.getReplies().stream()
                         .map(r -> ReplyRes.of(r, r.getMember()))
+                        .sorted(Comparator.comparing(ReplyRes::getCreatedAt).reversed())
                         .collect(Collectors.toList()))
                 .createdAt(article.getCreatedAt())
                 .build();
