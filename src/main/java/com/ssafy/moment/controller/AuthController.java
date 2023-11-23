@@ -5,6 +5,8 @@ import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.service.AuthService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
@@ -21,31 +23,19 @@ public class AuthController {
     @PostMapping("/login")
     @ResponseBody
     public ResponseDto<?> login(@RequestBody LoginReq req, HttpServletResponse res) {
-        try {
-            return authService.login(req, res);
-        } catch (Exception e) {
-            return ResponseDto.fail(e.getMessage());
-        }
+        return authService.login(req, res);
     }
 
     @PostMapping("/logout")
     @ResponseBody
     public ResponseDto<?> logout(HttpServletRequest request) {
-        try {
-            authService.logout(request);
-            return ResponseDto.success("LOGOUT SUCCESS");
-        } catch (Exception e) {
-            return ResponseDto.fail(e.getMessage());
-        }
+        authService.logout(request);
+        return ResponseDto.success("LOGOUT SUCCESS");
     }
 
     @GetMapping("/check")
     public ResponseDto<?> checkEmail(@RequestParam String email) {
-        try {
-            return ResponseDto.success(authService.checkEmail(email));
-        } catch (Exception e) {
-            return ResponseDto.fail(e.getMessage());
-        }
+        return ResponseDto.success(authService.checkEmail(email));
     }
 
     @GetMapping("/email-auth")
@@ -58,12 +48,13 @@ public class AuthController {
     @GetMapping("/renew")
     @ResponseBody
     public ResponseDto<?> renewAccessToken(HttpServletRequest request, HttpServletResponse response) throws ParseException {
-        try {
-            authService.renewAccessToken(request, response);
-            return ResponseDto.success("RENEW SUCCESS");
-        } catch (Exception e) {
-            return ResponseDto.fail(e.getMessage());
-        }
+        authService.renewAccessToken(request, response);
+        return ResponseDto.success("RENEW SUCCESS");
+    }
+
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "error/access-denied";
     }
 
 }

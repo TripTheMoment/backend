@@ -27,7 +27,7 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.url}")
     private String defaultUrl;
 
-    public String upload(MultipartFile uploadFile, String path) throws IOException {
+    public String upload(MultipartFile uploadFile, String path) {
         String origName = uploadFile.getOriginalFilename();
         String keyName;
         try {
@@ -48,6 +48,9 @@ public class S3UploadService {
             // 파일 삭제
             file.delete();
         } catch (StringIndexOutOfBoundsException e) {
+            keyName = null;
+            log.error("uploadService.upload() : "+e.getMessage());
+        } catch (IOException e) {
             keyName = null;
             log.error("uploadService.upload() : "+e.getMessage());
         }

@@ -1,6 +1,6 @@
 package com.ssafy.moment.config;
 
-import com.ssafy.moment.exception.AccessDeniedHandlerException;
+import com.ssafy.moment.exception.AccessDeniedHandlerImpl;
 import com.ssafy.moment.exception.AuthenticationEntryPointException;
 import com.ssafy.moment.security.TokenProvider;
 import com.ssafy.moment.service.UserDetailsServiceImpl;
@@ -37,7 +37,7 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationEntryPointException authenticationEntryPointException;
-    private final AccessDeniedHandlerException accessDeniedHandlerException;
+    private final AccessDeniedHandlerImpl accessDeniedHandlerImpl;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -56,7 +56,7 @@ public class SecurityConfig {
             .and()
             .exceptionHandling()
             .authenticationEntryPoint(authenticationEntryPointException)
-            .accessDeniedHandler(accessDeniedHandlerException)
+            .accessDeniedHandler(accessDeniedHandlerImpl)
 
             .and()
             .sessionManagement()

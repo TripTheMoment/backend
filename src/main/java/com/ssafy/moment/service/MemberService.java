@@ -253,8 +253,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateProfileImg(HttpServletRequest request, MultipartFile multipartFile) throws IOException {
+    public void updateProfileImg(HttpServletRequest request, MultipartFile multipartFile) {
         Member member = tokenProvider.getMemberFromToken(request);
+
         String keyName = s3UploadService.upload(multipartFile, "profile");
 
         member = memberRepository.findById(member.getId())

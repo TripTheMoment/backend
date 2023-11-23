@@ -35,61 +35,36 @@ public class AttractionController {
     public ResponseDto<?> getList(
         @RequestBody SearchReq searchReq,
         @PageableDefault(size = 16, sort = "id") Pageable pageable) {
-        try {
-            Page<AttractionOverviewRes> infos = attractionService.getAttractionList(searchReq, pageable);
-            return ResponseDto.success(infos);
-        } catch (Exception e) {
-            return ResponseDto.fail(e.getMessage());
-        }
+        return ResponseDto.success(attractionService.getAttractionList(searchReq, pageable));
     }
 
     @GetMapping("/{contentId}")
     public ResponseDto<?> getById(@PathVariable Integer contentId) {
-        try {
-            return ResponseDto.success(attractionService.getById(contentId));
-        } catch (Exception e) {
-            return ResponseDto.fail(e.getMessage());
-        }
+        return ResponseDto.success(attractionService.getById(contentId));
     }
 
     @PostMapping("/{contentId}/reviews")
     public ResponseDto<?> createReview(@RequestBody ReviewForm reviewForm, @PathVariable int contentId, HttpServletRequest request) {
-        try {
-            reviewService.create(reviewForm, contentId, request);
-            return ResponseDto.success("CREATE REVIEW SUCCESS");
-        } catch (Exception e) {
-            return ResponseDto.fail(e.getMessage());
-        }
+        reviewService.create(reviewForm, contentId, request);
+        return ResponseDto.success("CREATE REVIEW SUCCESS");
     }
 
     @DeleteMapping("/{contentId}/reviews/{reviewId}")
     public ResponseDto<?> deleteReview(@PathVariable int contentId, @PathVariable int reviewId, HttpServletRequest request) {
-        try {
-            reviewService.delete(reviewId, request);
-            return ResponseDto.success("DELETE REVIEW SUCCESS");
-        } catch (Exception e) {
-            return ResponseDto.fail(e.getMessage());
-        }
+        reviewService.delete(reviewId, request);
+        return ResponseDto.success("DELETE REVIEW SUCCESS");
     }
 
     @PostMapping("/{contentId}/bookmarks")
     public ResponseDto<?> createBookmark(@PathVariable int contentId, HttpServletRequest request) {
-        try {
-            bookmarkService.create(request, contentId);
-            return ResponseDto.success("CREATE REVIEW SUCCESS");
-        } catch (Exception e) {
-            return ResponseDto.fail(e.getMessage());
-        }
+        bookmarkService.create(request, contentId);
+        return ResponseDto.success("CREATE REVIEW SUCCESS");
     }
 
     @DeleteMapping("/{contentId}/bookmarks")
     public ResponseDto<?> deleteBookmark(@PathVariable int contentId, HttpServletRequest request) {
-        try {
-            bookmarkService.delete(request, contentId);
-            return ResponseDto.success("DELETE REVIEW SUCCESS");
-        } catch (Exception e) {
-            return ResponseDto.fail(e.getMessage());
-        }
+        bookmarkService.delete(request, contentId);
+        return ResponseDto.success("DELETE REVIEW SUCCESS");
     }
 
 }
