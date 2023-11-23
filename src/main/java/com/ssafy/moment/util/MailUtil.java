@@ -26,7 +26,7 @@ public class MailUtil {
         System.out.println("mailText: " + mailText);
         try {
             msg.addRecipients(Message.RecipientType.TO, to);
-            msg.setSubject("[Trip, the Moment] 본인인증");
+            msg.setSubject("본인인증 및 회원 활성화 안내");
             msg.setText(mailText, "utf-8", "html");
             msg.setFrom(new InternetAddress("sngjae972@gmail.com","[Trip, the Moment]","UTF-8"));
         } catch (MessagingException e) {
