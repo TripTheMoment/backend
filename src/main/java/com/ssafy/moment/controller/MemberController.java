@@ -11,6 +11,8 @@ import com.ssafy.moment.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -74,12 +76,14 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}/articles")
-    public ResponseDto<?> getArticles(@PathVariable int memberId, Pageable pageable) {
+    public ResponseDto<?> getArticles(@PathVariable int memberId,
+                                      @PageableDefault(size = 6) Pageable pageable) {
         return ResponseDto.success(memberService.getArticlesByMember(memberId, pageable));
     }
 
     @GetMapping("/{memberId}/bookmarks")
-    public ResponseDto<?> getBookmarks(@PathVariable int memberId, Pageable pageable) {
+    public ResponseDto<?> getBookmarks(@PathVariable int memberId,
+                                       @PageableDefault(size = 6)Pageable pageable) {
         return ResponseDto.success(memberService.getBookmarksByMember(memberId, pageable));
     }
 
