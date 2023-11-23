@@ -70,7 +70,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public int create(HttpServletRequest request, MultipartFile file, ArticleForm form) throws IOException {
+    public int create(HttpServletRequest request, MultipartFile file, ArticleForm form) {
         Member member = tokenProvider.getMemberFromToken(request);
         String keyName = s3UploadService.upload(file, "article");
         Article article = Article.of(form, keyName, member);
