@@ -66,7 +66,6 @@ public class AuthService {
         Member member = tokenProvider.getMemberFromToken(request);
 
         tokenProvider.deleteRefreshToken(member);
-        tokenProvider.saveBlacklistToken(request);
 
         return true;
     }

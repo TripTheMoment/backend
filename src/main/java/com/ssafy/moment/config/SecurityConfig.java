@@ -96,6 +96,7 @@ public class SecurityConfig {
             HttpMethod.POST.name(),
             HttpMethod.DELETE.name(),
             HttpMethod.PUT.name(),
+            HttpMethod.PATCH.name(),
             HttpMethod.HEAD.name(),
             HttpMethod.OPTIONS.name()
         ));
