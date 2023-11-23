@@ -43,7 +43,7 @@ public class MemberController {
         return ResponseDto.success("RESET PASSWORD SUCCESS");
     }
 
-    @GetMapping("/password")
+    @PostMapping("/password")
     public ResponseDto<?> checkPassword(HttpServletRequest request, @RequestBody PasswordCheckForm form) {
         memberService.checkPassword(request, form);
         return ResponseDto.success("CORRECT PASSWORD");
