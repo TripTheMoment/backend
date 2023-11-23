@@ -17,7 +17,7 @@ public class ReviewRes {
     private int id;
     private int score;
     private String content;
-    private int memberId;
+    private MemberOverviewRes member;
     private int contentId;
 
     public static ReviewRes from(Review review) {
@@ -25,7 +25,7 @@ public class ReviewRes {
             .id(review.getId())
             .score(review.getScore())
             .content(review.getContent())
-            .memberId(review.getMember().getId())
+            .member(MemberOverviewRes.from(review.getMember()))
             .contentId(review.getAttractionInfo().getId())
             .build();
     }
