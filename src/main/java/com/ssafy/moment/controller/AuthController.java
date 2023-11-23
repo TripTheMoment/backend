@@ -27,7 +27,7 @@ public class AuthController {
         try {
             return authService.login(req, res);
         } catch (Exception e) {
-            ResponseDto.fail(e.getMessage());
+            return ResponseDto.fail(e.getMessage());
         }
     }
 
@@ -37,7 +37,7 @@ public class AuthController {
             authService.logout(request);
             return ResponseDto.success("LOGOUT SUCCESS");
         } catch (Exception e) {
-            ResponseDto.fail(e.getMessage());
+            return ResponseDto.fail(e.getMessage());
         }
     }
 
@@ -46,7 +46,7 @@ public class AuthController {
         try {
             return ResponseDto.success(authService.checkEmail(email));
         } catch (Exception e) {
-            ResponseDto.fail(e.getMessage());
+            return ResponseDto.fail(e.getMessage());
         }
     }
 
