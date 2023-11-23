@@ -34,6 +34,7 @@ public class AuthController {
     }
 
     @GetMapping("/check")
+    @ResponseBody
     public ResponseDto<?> checkEmail(@RequestParam String email) {
         return ResponseDto.success(authService.checkEmail(email));
     }
