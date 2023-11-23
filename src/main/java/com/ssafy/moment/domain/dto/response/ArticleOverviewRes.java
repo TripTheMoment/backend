@@ -1,8 +1,7 @@
 package com.ssafy.moment.domain.dto.response;
 
+import java.time.LocalDate;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,6 +13,6 @@ public class ArticleOverviewRes {
     private int id;
     private String title;
     private String imgUrl;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
 }

@@ -129,7 +129,7 @@ public class MemberService {
             .profileImgUrl(defaultUrl + member.getProfileImgKeyName())
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
-            .createdAt(member.getCreatedAt())
+            .createdAt(member.getCreatedAt().toLocalDate())
             .build();
     }
 
@@ -195,7 +195,7 @@ public class MemberService {
             .profileImgUrl(defaultUrl + otherMember.getProfileImgKeyName())
             .followingCnt(followingCnt)
             .followerCnt(followerCnt)
-            .createdAt(otherMember.getCreatedAt())
+            .createdAt(otherMember.getCreatedAt().toLocalDate())
             .build();
 
         if (followRepository.existsByFromMemberAndToMember(member, otherMember)) {

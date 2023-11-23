@@ -1,13 +1,12 @@
 package com.ssafy.moment.domain.dto.response;
 
 import com.ssafy.moment.domain.entity.AttractionReview;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -21,7 +20,7 @@ public class ReviewRes {
     private String content;
     private MemberOverviewRes member;
     private int contentId;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     public static ReviewRes from(AttractionReview review) {
         return ReviewRes.builder()
@@ -30,7 +29,7 @@ public class ReviewRes {
             .content(review.getContent())
             .member(MemberOverviewRes.from(review.getMember()))
             .contentId(review.getAttractionInfo().getId())
-            .createdAt(review.getCreatedAt())
+            .createdAt(review.getCreatedAt().toLocalDate())
             .build();
     }
 

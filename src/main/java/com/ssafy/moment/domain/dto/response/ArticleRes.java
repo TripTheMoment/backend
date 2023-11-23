@@ -1,11 +1,7 @@
 package com.ssafy.moment.domain.dto.response;
 
-import com.ssafy.moment.domain.entity.Article;
-import com.ssafy.moment.domain.entity.Member;
-
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,6 +21,6 @@ public class ArticleRes {
     private String imgUrl;
     private MemberOverviewRes member;
     private List<ReplyRes> replies;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
 }

@@ -6,6 +6,7 @@ import com.ssafy.moment.domain.dto.response.MemberOverviewRes;
 import com.ssafy.moment.domain.dto.response.ReplyRes;
 import com.ssafy.moment.domain.entity.Article;
 import com.ssafy.moment.domain.entity.Member;
+import com.ssafy.moment.domain.entity.Reply;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
 import com.ssafy.moment.repository.ArticleRepository;
@@ -45,7 +46,7 @@ public class ArticleService {
                 .content(e.getContent())
                 .imgUrl((e.getImgKeyName() == null) ? null : (defaultUrl + e.getImgKeyName()))
                 .member(MemberOverviewRes.from(e.getMember()))
-                .createdAt(e.getCreatedAt())
+                .createdAt(e.getCreatedAt().toLocalDate())
                 .build());
     }
 
@@ -63,10 +64,10 @@ public class ArticleService {
                 .imgUrl((article.getImgKeyName() == null) ? null : (defaultUrl + article.getImgKeyName()))
                 .member(MemberOverviewRes.from(article.getMember()))
                 .replies(article.getReplies().stream()
+                        .sorted(Comparator.comparing(Reply::getCreatedAt).reversed())
                         .map(r -> ReplyRes.of(r, r.getMember()))
-                        .sorted(Comparator.comparing(ReplyRes::getCreatedAt).reversed())
                         .collect(Collectors.toList()))
-                .createdAt(article.getCreatedAt())
+                .createdAt(article.getCreatedAt().toLocalDate())
                 .build();
     }
 

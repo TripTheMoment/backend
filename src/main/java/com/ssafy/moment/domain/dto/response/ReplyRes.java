@@ -2,7 +2,7 @@ package com.ssafy.moment.domain.dto.response;
 
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.domain.entity.Reply;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,13 +18,13 @@ public class ReplyRes {
 
     private MemberOverviewRes member;
     private String content;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     public static ReplyRes of(Reply reply, Member member) {
         return ReplyRes.builder()
             .member(MemberOverviewRes.from(member))
             .content(reply.getContent())
-            .createdAt(reply.getCreatedAt())
+            .createdAt(reply.getCreatedAt().toLocalDate())
             .build();
     }
 

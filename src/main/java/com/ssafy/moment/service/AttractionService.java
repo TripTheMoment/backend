@@ -55,8 +55,8 @@ public class AttractionService {
         AttractionDetailRes res = AttractionDetailRes.from(info);
         res.setDescription(descriptionRepository.findById(id).get().getOverview());
         res.setReviewResList(reviews.stream()
+                .sorted(Comparator.comparing(AttractionReview::getCreatedAt).reversed())
                 .map(r -> ReviewRes.from(r))
-                .sorted(Comparator.comparing(ReviewRes::getCreatedAt).reversed())
                 .collect(Collectors.toList()));
         res.setBookmarkCnt(bookmarkCnt);
 

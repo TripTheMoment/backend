@@ -2,13 +2,10 @@ package com.ssafy.moment.controller;
 
 import com.ssafy.moment.domain.dto.request.ReviewForm;
 import com.ssafy.moment.domain.dto.request.SearchReq;
-import com.ssafy.moment.domain.dto.response.AttractionDetailRes;
-import com.ssafy.moment.domain.dto.response.AttractionOverviewRes;
 import com.ssafy.moment.domain.dto.response.ResponseDto;
-import com.ssafy.moment.domain.entity.AttractionInfo;
-import com.ssafy.moment.service.AttractionService;
 import com.ssafy.moment.service.AttractionBookmarkService;
 import com.ssafy.moment.service.AttractionReviewService;
+import com.ssafy.moment.service.AttractionService;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

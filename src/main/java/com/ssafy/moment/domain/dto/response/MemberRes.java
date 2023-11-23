@@ -1,8 +1,7 @@
 package com.ssafy.moment.domain.dto.response;
 
+import java.time.LocalDate;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,6 +17,6 @@ public class MemberRes {
     private boolean followYn;
     private int followingCnt;
     private int followerCnt;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
 }
