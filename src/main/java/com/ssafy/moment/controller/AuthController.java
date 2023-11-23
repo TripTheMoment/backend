@@ -23,19 +23,31 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseDto<String> login(@RequestBody LoginReq req, HttpServletResponse res) {
-        return authService.login(req, res);
+    public ResponseDto<?> login(@RequestBody LoginReq req, HttpServletResponse res) {
+        try {
+            return authService.login(req, res);
+        } catch (Exception e) {
+            ResponseDto.fail(e.getMessage());
+        }
     }
 
     @PostMapping("/logout")
-    public ResponseDto<String> logout(HttpServletRequest request) {
-        authService.logout(request);
-        return ResponseDto.success("LOGOUT SUCCESS");
+    public ResponseDto<?> logout(HttpServletRequest request) {
+        try {
+            authService.logout(request);
+            return ResponseDto.success("LOGOUT SUCCESS");
+        } catch (Exception e) {
+            ResponseDto.fail(e.getMessage());
+        }
     }
 
     @GetMapping("/check")
-    public ResponseDto<Boolean> checkEmail(@RequestParam String email) {
-        return ResponseDto.success(authService.checkEmail(email));
+    public ResponseDto<?> checkEmail(@RequestParam String email) {
+        try {
+            return ResponseDto.success(authService.checkEmail(email));
+        } catch (Exception e) {
+            ResponseDto.fail(e.getMessage());
+        }
     }
 
     @GetMapping("/email-auth")
@@ -46,9 +58,13 @@ public class AuthController {
     }
 
     @GetMapping("/renew")
-    public ResponseDto<String> renewAccessToken(HttpServletRequest request, HttpServletResponse response) throws ParseException {
-        authService.renewAccessToken(request, response);
-        return ResponseDto.success("RENEW SUCCESS");
+    public ResponseDto<?> renewAccessToken(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        try {
+            authService.renewAccessToken(request, response);
+            return ResponseDto.success("RENEW SUCCESS");
+        } catch (Exception e) {
+            return ResponseDto.fail(e.getMessage());
+        }
     }
 
 }

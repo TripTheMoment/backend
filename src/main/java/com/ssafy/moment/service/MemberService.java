@@ -52,9 +52,9 @@ public class MemberService {
     private final MailUtil mailUtil;
 
     @Transactional
-    public boolean signup(SignupReq req) {
+    public void signup(SignupReq req) {
         if (memberRepository.findByEmail(req.getEmail()).isPresent()) {
-            return false;
+            throw new CustomException(ErrorCode.ALREADY_REGISTERED_EMAIL);
         }
 
         String uuid = UUID.randomUUID().toString();
@@ -71,8 +71,6 @@ public class MemberService {
         memberRepository.save(member);
 
         mailUtil.sendAuthMail(req.getEmail(), uuid);
-
-        return true;
     }
 
     @Transactional

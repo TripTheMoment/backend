@@ -23,12 +23,20 @@ public class ArticleController {
 
     @GetMapping
     public ResponseDto<?> getList(@RequestParam String title, Pageable pageable) {
-        return ResponseDto.success(articleService.getList(title, pageable));
+        try {
+            return ResponseDto.success(articleService.getList(title, pageable));
+        } catch (Exception e) {
+            return ResponseDto.fail(e.getMessage());
+        }
     }
 
     @GetMapping("/{articleId}")
     public ResponseDto<?> get(@PathVariable int articleId) {
-        return ResponseDto.success(articleService.get(articleId));
+        try {
+            return ResponseDto.success(articleService.get(articleId));
+        } catch (Exception e) {
+            return ResponseDto.fail(e.getMessage());
+        }
     }
 
     @PostMapping
@@ -36,32 +44,48 @@ public class ArticleController {
         try {
             articleService.create(request, file, form);
             return ResponseDto.success("UPLOAD SUCCESS");
-        } catch (IOException e) {
-            return ResponseDto.fail("UPLOAD FAIL");
+        } catch (Exception e) {
+            return ResponseDto.fail(e.getMessage());
         }
     }
 
     @PutMapping("/{articleId}")
     public ResponseDto<?> update(HttpServletRequest request, @PathVariable int articleId, @RequestBody ArticleForm form) {
-        return ResponseDto.success(articleService.update(request, articleId, form));
+        try {
+            return ResponseDto.success(articleService.update(request, articleId, form));
+        } catch (Exception e) {
+            return ResponseDto.fail(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{articleId}")
     public ResponseDto<?> delete(HttpServletRequest request, @PathVariable int articleId) {
-        articleService.delete(request, articleId);
-        return ResponseDto.success("ARTICLE DELETE SUCCESS");
+        try {
+            articleService.delete(request, articleId);
+            return ResponseDto.success("ARTICLE DELETE SUCCESS");
+        } catch (Exception e) {
+            return ResponseDto.fail(e.getMessage());
+        }
     }
 
     @PostMapping("/{articleId}/replies")
     public ResponseDto<?> createReply(HttpServletRequest request, @RequestBody ReplyForm form, @PathVariable int articleId) {
-        replyService.create(request, articleId, form);
-        return ResponseDto.success("REPLY CREATE SUCCESS");
+        try {
+            replyService.create(request, articleId, form);
+            return ResponseDto.success("REPLY CREATE SUCCESS");
+        } catch (Exception e) {
+            return ResponseDto.fail(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{articleId}/replies/{replyId}")
     public ResponseDto<?> deleteReply(HttpServletRequest request, @PathVariable int articleId, @PathVariable int replyId) {
-        replyService.delete(request, replyId);
-        return ResponseDto.success("REPLY DELETE SUCCESS");
+        try {
+            replyService.delete(request, replyId);
+            return ResponseDto.success("REPLY DELETE SUCCESS");
+        } catch (Exception e) {
+            return ResponseDto.fail(e.getMessage());
+        }
     }
 
 }

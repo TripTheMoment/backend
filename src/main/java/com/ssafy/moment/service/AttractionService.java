@@ -2,6 +2,7 @@ package com.ssafy.moment.service;
 
 import com.ssafy.moment.domain.dto.request.SearchReq;
 import com.ssafy.moment.domain.dto.response.AttractionDetailRes;
+import com.ssafy.moment.domain.dto.response.AttractionOverviewRes;
 import com.ssafy.moment.domain.dto.response.ReviewRes;
 import com.ssafy.moment.domain.entity.AttractionInfo;
 import com.ssafy.moment.domain.entity.Review;
@@ -27,7 +28,7 @@ public class AttractionService {
     private final AttractionReviewRepository reviewRepository;
     private final AttractionBookmarkRepository bookmarkRepository;
 
-    public Page<AttractionInfo> getAttractionList(SearchReq searchReq, Pageable pageable) {
+    public Page<AttractionOverviewRes> getAttractionList(SearchReq searchReq, Pageable pageable) {
         Page<AttractionInfo> infos;
         if (searchReq.getSido() == 0 && searchReq.getType() == 0) {
             infos = infoRepository.findByTitleContaining(searchReq.getTitle(), pageable);
@@ -40,7 +41,7 @@ public class AttractionService {
                 searchReq.getSido(), searchReq.getType(), searchReq.getTitle(), pageable);
         }
 
-        return infos;
+        return infos.map(i -> AttractionOverviewRes.from(i));
     }
 
     public AttractionDetailRes getById(int id) {
