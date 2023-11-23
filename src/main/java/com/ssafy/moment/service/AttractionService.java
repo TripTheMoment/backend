@@ -5,7 +5,7 @@ import com.ssafy.moment.domain.dto.response.AttractionDetailRes;
 import com.ssafy.moment.domain.dto.response.AttractionOverviewRes;
 import com.ssafy.moment.domain.dto.response.ReviewRes;
 import com.ssafy.moment.domain.entity.AttractionInfo;
-import com.ssafy.moment.domain.entity.Review;
+import com.ssafy.moment.domain.entity.AttractionReview;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
 import com.ssafy.moment.repository.AttractionBookmarkRepository;
@@ -48,7 +48,7 @@ public class AttractionService {
 
     public AttractionDetailRes getById(int id) {
         AttractionInfo info = getAttractionInfoById(id);
-        List<Review> reviews = getReviewsByContentId(info);
+        List<AttractionReview> reviews = getReviewsByContentId(info);
 
         int bookmarkCnt = Long.valueOf(bookmarkRepository.countByAttractionInfo(info)).intValue();
 
@@ -68,7 +68,7 @@ public class AttractionService {
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
     }
 
-    private List<Review> getReviewsByContentId(AttractionInfo info) {
+    private List<AttractionReview> getReviewsByContentId(AttractionInfo info) {
         return reviewRepository.findByAttractionInfo(info);
     }
 

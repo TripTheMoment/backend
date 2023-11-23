@@ -1,6 +1,6 @@
 package com.ssafy.moment.domain.dto.response;
 
-import com.ssafy.moment.domain.entity.Review;
+import com.ssafy.moment.domain.entity.AttractionReview;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class ReviewRes {
     private int contentId;
     private LocalDateTime createdAt;
 
-    public static ReviewRes from(Review review) {
+    public static ReviewRes from(AttractionReview review) {
         return ReviewRes.builder()
             .id(review.getId())
             .score(review.getScore())

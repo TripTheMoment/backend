@@ -34,9 +34,9 @@ public class AttractionInfo {
     private String mlevel;
 
 //    @OneToMany(mappedBy = "attractionInfo")
-//    private List<Bookmark> bookmarks;
+//    private List<AttractionBookmark> bookmarks;
 //
 //    @OneToMany(mappedBy = "attractionInfo")
-//    private List<Review> reviews;
+//    private List<AttractionReview> reviews;
 
 }

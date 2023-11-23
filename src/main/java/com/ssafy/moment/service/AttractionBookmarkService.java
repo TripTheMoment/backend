@@ -1,7 +1,7 @@
 package com.ssafy.moment.service;
 
+import com.ssafy.moment.domain.entity.AttractionBookmark;
 import com.ssafy.moment.domain.entity.AttractionInfo;
-import com.ssafy.moment.domain.entity.Bookmark;
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
@@ -28,12 +28,12 @@ public class AttractionBookmarkService {
         AttractionInfo attractionInfo = getAttractionInfoById(contentId);
 
         // 기존에 등록된 북마크가 있는지 확인
-        Optional<Bookmark> optBookmark = bookmarkRepository.findByAttractionInfoAndMember(attractionInfo, member);
+        Optional<AttractionBookmark> optBookmark = bookmarkRepository.findByAttractionInfoAndMember(attractionInfo, member);
         if (optBookmark.isPresent()) {
             throw new CustomException(ErrorCode.ALREADY_EXIST_BOOKMARK);
         }
 
-        Bookmark bookmark = Bookmark.of(attractionInfo, member);
+        AttractionBookmark bookmark = AttractionBookmark.of(attractionInfo, member);
         bookmarkRepository.save(bookmark);
     }
 

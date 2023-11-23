@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bookmark extends BaseEntity {
+public class AttractionBookmark extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +32,8 @@ public class Bookmark extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public static Bookmark of(AttractionInfo info, Member member) {
-        return Bookmark.builder()
+    public static AttractionBookmark of(AttractionInfo info, Member member) {
+        return AttractionBookmark.builder()
             .attractionInfo(info)
             .member(member)
             .build();

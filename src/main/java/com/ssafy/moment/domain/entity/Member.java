@@ -46,7 +46,7 @@ public class Member extends BaseEntity {
 //
 //    @OneToMany(mappedBy = "member")
 //    @JsonManagedReference
-//    private List<Bookmark> bookmarks;
+//    private List<AttractionBookmark> bookmarks;
 
     public void inactive() {
         this.status = false;

@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Review extends BaseEntity {
+public class AttractionReview extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +38,8 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "content_id")
     private AttractionInfo attractionInfo;
 
-    public static Review of(Member member, AttractionInfo info, ReviewForm form) {
-        return Review.builder()
+    public static AttractionReview of(Member member, AttractionInfo info, ReviewForm form) {
+        return AttractionReview.builder()
             .score(form.getScore())
             .content(form.getContent())
             .member(member)

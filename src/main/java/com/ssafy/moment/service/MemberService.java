@@ -2,10 +2,9 @@ package com.ssafy.moment.service;
 
 import com.ssafy.moment.domain.dto.request.MemberInfoUpdateForm;
 import com.ssafy.moment.domain.dto.request.PasswordCheckForm;
-import com.ssafy.moment.domain.dto.request.PasswordResetReq;
 import com.ssafy.moment.domain.dto.request.SignupReq;
 import com.ssafy.moment.domain.dto.response.*;
-import com.ssafy.moment.domain.entity.Bookmark;
+import com.ssafy.moment.domain.entity.AttractionBookmark;
 import com.ssafy.moment.domain.entity.Follow;
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.exception.CustomException;
@@ -166,7 +165,7 @@ public class MemberService {
     @Transactional
     public void deleteBookmark(HttpServletRequest request, int bookmarkId) {
         Member member = tokenProvider.getMemberFromToken(request);
-        Bookmark bookmark = getBookmarkById(bookmarkId);
+        AttractionBookmark bookmark = getBookmarkById(bookmarkId);
 
         if (member.getId() != bookmark.getMember().getId()) {
             throw new CustomException(ErrorCode.NO_AUTHORITY);
@@ -175,7 +174,7 @@ public class MemberService {
         bookmarkRepository.deleteById(bookmarkId);
     }
 
-    private Bookmark getBookmarkById(int bookmarkId) {
+    private AttractionBookmark getBookmarkById(int bookmarkId) {
         return bookmarkRepository.findById(bookmarkId)
             .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BY_ID));
     }
