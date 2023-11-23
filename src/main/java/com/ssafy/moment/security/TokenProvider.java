@@ -2,14 +2,11 @@ package com.ssafy.moment.security;
 
 import com.ssafy.moment.domain.UserDetailsImpl;
 import com.ssafy.moment.domain.dto.TokenDto;
-import com.ssafy.moment.domain.entity.BlacklistToken;
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.domain.entity.RefreshToken;
 import com.ssafy.moment.exception.CustomException;
 import com.ssafy.moment.exception.ErrorCode;
-import com.ssafy.moment.repository.BlacklistTokenRepository;
 import com.ssafy.moment.repository.RefreshTokenRepository;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -18,8 +15,6 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +35,6 @@ import org.springframework.util.StringUtils;
 public class TokenProvider {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final BlacklistTokenRepository blacklistTokenRepository;
 
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
@@ -51,8 +45,7 @@ public class TokenProvider {
 
     // 암호화
     public TokenProvider(@Value("${jwt.secret}") String secretKey,
-        RefreshTokenRepository refreshTokenRepository, BlacklistTokenRepository blacklistTokenRepository) {
-        this.blacklistTokenRepository = blacklistTokenRepository;
+        RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -131,11 +124,6 @@ public class TokenProvider {
         refreshTokenRepository.delete(refreshToken);
     }
 
-    @Transactional(readOnly = true)
-    public boolean checkBlacklistToken(String accessToken) {
-        return blacklistTokenRepository.existsById(accessToken);
-    }
-
 //    public Long getMemberIdByToken(String accessToken) {
 //        String token;
 //        if (StringUtils.hasText(accessToken) && accessToken.startsWith("Bearer ")) {
@@ -195,33 +183,20 @@ public class TokenProvider {
 
     @Transactional
     public Member validateMember(HttpServletRequest request) {
-        if (checkBlacklistToken(getAccessToken(request))) {
-            throw new CustomException(ErrorCode.BLACKLIST_ACCESS_TOKEN);
-        }
-
         Member member = getMemberFromAuthentication();
 
         return member;
     }
 
-    // access token 만료 시간 구하기
-    private LocalDateTime getExpiredDateTime(String token) {
-        Claims claims = Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
-
-        return claims.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-    }
-
-    public void saveBlacklistToken(HttpServletRequest request) {
-        String accessToken = getAccessToken(request);
-        log.info("Blacklist add : {}", accessToken);
-        blacklistTokenRepository.save(BlacklistToken.builder()
-            .keyValue(accessToken)
-            .expiredDateTime(getExpiredDateTime(accessToken))
-            .build());
-    }
+//    // access token 만료 시간 구하기
+//    private LocalDateTime getExpiredDateTime(String token) {
+//        Claims claims = Jwts.parserBuilder()
+//            .setSigningKey(key)
+//            .build()
+//            .parseClaimsJws(token)
+//            .getBody();
+//
+//        return claims.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+//    }
 
 }
