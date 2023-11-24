@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignupReq {
+public class SearchForm {
 
-    private String email;
-    private String password;
-    private String name;
+    private int sido;
+    private int type;
+    private String title;
 
 }

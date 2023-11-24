@@ -1,7 +1,7 @@
 package com.ssafy.moment.controller;
 
 import com.ssafy.moment.domain.dto.request.ReviewForm;
-import com.ssafy.moment.domain.dto.request.SearchReq;
+import com.ssafy.moment.domain.dto.request.SearchForm;
 import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.service.AttractionBookmarkService;
 import com.ssafy.moment.service.AttractionReviewService;
@@ -29,9 +29,9 @@ public class AttractionController {
 
     @PostMapping
     public ResponseDto<?> getList(
-        @RequestBody SearchReq searchReq,
+        @RequestBody SearchForm searchForm,
         @PageableDefault(size = 16, sort = "id") Pageable pageable) {
-        return ResponseDto.success(attractionService.getAttractionList(searchReq, pageable));
+        return ResponseDto.success(attractionService.getAttractionList(searchForm, pageable));
     }
 
     @GetMapping("/{contentId}")

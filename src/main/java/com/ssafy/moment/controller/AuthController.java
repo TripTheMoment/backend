@@ -1,6 +1,6 @@
 package com.ssafy.moment.controller;
 
-import com.ssafy.moment.domain.dto.request.LoginReq;
+import com.ssafy.moment.domain.dto.request.LoginForm;
 import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.service.AuthService;
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +21,8 @@ public class AuthController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseDto<?> login(@RequestBody LoginReq req, HttpServletResponse res) {
-        return authService.login(req, res);
+    public ResponseDto<?> login(@RequestBody LoginForm form, HttpServletResponse res) {
+        return authService.login(form, res);
     }
 
     @PostMapping("/logout")

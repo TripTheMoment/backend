@@ -1,7 +1,7 @@
 package com.ssafy.moment.service;
 
 import com.ssafy.moment.domain.dto.TokenDto;
-import com.ssafy.moment.domain.dto.request.LoginReq;
+import com.ssafy.moment.domain.dto.request.LoginForm;
 import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.domain.entity.Member;
 import com.ssafy.moment.domain.entity.RefreshToken;
@@ -31,13 +31,13 @@ public class AuthService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public ResponseDto<String> login(LoginReq req, HttpServletResponse res) {
-        Member member = getMemberByEmail(req.getEmail());
+    public ResponseDto<String> login(LoginForm form, HttpServletResponse res) {
+        Member member = getMemberByEmail(form.getEmail());
         if (member == null) {
             return ResponseDto.fail(ErrorCode.NOT_FOUND_MEMBER.getDetail());
         }
 
-        if (!PasswordUtil.checkPassword(req.getPassword(), member.getPassword())) {
+        if (!PasswordUtil.checkPassword(form.getPassword(), member.getPassword())) {
             return ResponseDto.fail(ErrorCode.WRONG_PASSWORD.getDetail());
         }
 

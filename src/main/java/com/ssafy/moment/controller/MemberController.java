@@ -2,7 +2,7 @@ package com.ssafy.moment.controller;
 
 import com.ssafy.moment.domain.dto.request.MemberInfoUpdateForm;
 import com.ssafy.moment.domain.dto.request.PasswordCheckForm;
-import com.ssafy.moment.domain.dto.request.SignupReq;
+import com.ssafy.moment.domain.dto.request.SignupForm;
 import com.ssafy.moment.domain.dto.response.MemberRes;
 import com.ssafy.moment.domain.dto.response.ResponseDto;
 import com.ssafy.moment.service.MemberService;
@@ -31,8 +31,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseDto<?> signup(@RequestBody SignupReq signupReq) {
-        memberService.signup(signupReq);
+    public ResponseDto<?> signup(@RequestBody SignupForm signupForm) {
+        memberService.signup(signupForm);
         return ResponseDto.success("SIGNUP SUCCESS");
     }
 

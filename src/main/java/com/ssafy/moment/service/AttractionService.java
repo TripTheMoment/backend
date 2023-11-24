@@ -1,6 +1,6 @@
 package com.ssafy.moment.service;
 
-import com.ssafy.moment.domain.dto.request.SearchReq;
+import com.ssafy.moment.domain.dto.request.SearchForm;
 import com.ssafy.moment.domain.dto.response.AttractionDetailRes;
 import com.ssafy.moment.domain.dto.response.AttractionOverviewRes;
 import com.ssafy.moment.domain.dto.response.ReviewRes;
@@ -30,17 +30,18 @@ public class AttractionService {
     private final AttractionReviewRepository reviewRepository;
     private final AttractionBookmarkRepository bookmarkRepository;
 
-    public Page<AttractionOverviewRes> getAttractionList(SearchReq searchReq, Pageable pageable) {
+    public Page<AttractionOverviewRes> getAttractionList(SearchForm searchForm, Pageable pageable) {
         Page<AttractionInfo> infos;
-        if (searchReq.getSido() == 0 && searchReq.getType() == 0) {
-            infos = infoRepository.findByTitleContaining(searchReq.getTitle(), pageable);
-        } else if (searchReq.getSido() == 0) {
-            infos = infoRepository.findByContentTypeIdAndTitleContaining(searchReq.getType(), searchReq.getTitle(), pageable);
-        } else if (searchReq.getType() == 0) {
-            infos = infoRepository.findBySidoCodeAndTitleContaining(searchReq.getSido(), searchReq.getTitle(), pageable);
+        if (searchForm.getSido() == 0 && searchForm.getType() == 0) {
+            infos = infoRepository.findByTitleContaining(searchForm.getTitle(), pageable);
+        } else if (searchForm.getSido() == 0) {
+            infos = infoRepository.findByContentTypeIdAndTitleContaining(searchForm.getType(), searchForm.getTitle(), pageable);
+        } else if (searchForm.getType() == 0) {
+            infos = infoRepository.findBySidoCodeAndTitleContaining(
+                searchForm.getSido(), searchForm.getTitle(), pageable);
         } else {
             infos = infoRepository.findBySidoCodeAndContentTypeIdAndTitleContaining(
-                searchReq.getSido(), searchReq.getType(), searchReq.getTitle(), pageable);
+                searchForm.getSido(), searchForm.getType(), searchForm.getTitle(), pageable);
         }
 
         return infos.map(i -> AttractionOverviewRes.from(i));

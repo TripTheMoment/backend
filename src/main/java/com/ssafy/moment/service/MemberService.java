@@ -2,7 +2,7 @@ package com.ssafy.moment.service;
 
 import com.ssafy.moment.domain.dto.request.MemberInfoUpdateForm;
 import com.ssafy.moment.domain.dto.request.PasswordCheckForm;
-import com.ssafy.moment.domain.dto.request.SignupReq;
+import com.ssafy.moment.domain.dto.request.SignupForm;
 import com.ssafy.moment.domain.dto.response.*;
 import com.ssafy.moment.domain.entity.AttractionBookmark;
 import com.ssafy.moment.domain.entity.Follow;
@@ -49,7 +49,7 @@ public class MemberService {
     private final MailUtil mailUtil;
 
     @Transactional
-    public void signup(SignupReq req) {
+    public void signup(SignupForm req) {
         if (memberRepository.findByEmail(req.getEmail()).isPresent()) {
             throw new CustomException(ErrorCode.ALREADY_REGISTERED_EMAIL);
         }
